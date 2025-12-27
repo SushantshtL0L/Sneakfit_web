@@ -33,7 +33,7 @@ export default function RegisterForm({ onSwitchToLogin }: RegisterFormProps) {
 
   return (
     <div className="w-full max-w-md rounded-3xl bg-white p-8 shadow-lg">
-      {/* Logo */}
+      
       <div className="flex justify-center mb-4">
         <Image
           src="/images/logo.png"
@@ -44,14 +44,14 @@ export default function RegisterForm({ onSwitchToLogin }: RegisterFormProps) {
         />
       </div>
 
-      {/* Title */}
+      
       <h2 className="text-center text-2xl font-bold text-gray-900 mb-8">
         Create Your Account
       </h2>
 
-      {/* Form */}
+      
       <form onSubmit={handleSubmit} className="space-y-4">
-        {/* Full Name Input */}
+        
         <div className="relative">
           <div className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400">
             <svg
@@ -78,7 +78,7 @@ export default function RegisterForm({ onSwitchToLogin }: RegisterFormProps) {
           />
         </div>
 
-        {/* Email Input */}
+       
         <div className="relative">
           <div className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400">
             <svg
@@ -159,7 +159,7 @@ export default function RegisterForm({ onSwitchToLogin }: RegisterFormProps) {
           />
         </div>
 
-        {/* Sign Up Button */}
+        
         <button
           type="submit"
           className="w-full rounded-xl bg-teal-400 py-4 font-semibold text-white transition-all hover:bg-teal-500"
@@ -168,14 +168,14 @@ export default function RegisterForm({ onSwitchToLogin }: RegisterFormProps) {
         </button>
       </form>
 
-      {/* Divider */}
+      
       <div className="my-6 flex items-center gap-3">
         <div className="h-px flex-1 bg-gray-300" />
         <span className="text-sm text-gray-500">or continue with</span>
         <div className="h-px flex-1 bg-gray-300" />
       </div>
 
-      {/* Social Login Buttons */}
+   
       <div className="flex justify-center gap-4">
         <button className="flex h-12 w-12 items-center justify-center rounded-full border border-gray-200 transition-all hover:bg-gray-50">
           <svg className="h-6 w-6" viewBox="0 0 24 24">
@@ -205,7 +205,7 @@ export default function RegisterForm({ onSwitchToLogin }: RegisterFormProps) {
         </button>
       </div>
 
-      {/* Login Link */}
+      
       <p className="mt-6 text-center text-sm text-gray-600">
         Already have an account?{" "}
         <span
