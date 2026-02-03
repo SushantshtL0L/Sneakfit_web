@@ -2,38 +2,56 @@
 
 import Image from "next/image";
 import { z } from "zod";
+import { useState } from "react";
+import { FaEye, FaEyeSlash } from "react-icons/fa";
 import { registerSchema } from "../schema";
+import { handleRegister } from "@/lib/actions/auth.actions";
+import { toast } from "react-toastify";
 
 interface RegisterFormProps {
   onSwitchToLogin?: () => void;
 }
 
 export default function RegisterForm({ onSwitchToLogin }: RegisterFormProps) {
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const formData = new FormData(e.currentTarget);
-    
+
+    const nameValue = formData.get("name") as string;
     const data = {
-      fullName: formData.get("fullName") as string,
+      name: nameValue,
+      username: nameValue, // Automatically use Name as Username
       email: formData.get("email") as string,
       password: formData.get("password") as string,
       confirmPassword: formData.get("confirmPassword") as string,
     };
 
     const result = registerSchema.safeParse(data);
-    
+
     if (!result.success) {
       alert(result.error.issues[0].message);
       return;
     }
 
-    console.log("Register data:", result.data);
-    alert("Registration successful!");
+    try {
+      const resultAction = await handleRegister(data);
+      if (resultAction.success) {
+        toast.success("Registration successful! Please login.");
+        onSwitchToLogin?.();
+      } else {
+        toast.error(resultAction.message || "Registration failed");
+      }
+    } catch (error) {
+      console.error("Registration error:", error);
+      toast.error("An unexpected error occurred");
+    }
   };
 
   return (
     <div className="w-full max-w-md rounded-3xl bg-white p-8 shadow-lg">
-      
+
       <div className="flex justify-center mb-4">
         <Image
           src="/images/logo.png"
@@ -44,14 +62,14 @@ export default function RegisterForm({ onSwitchToLogin }: RegisterFormProps) {
         />
       </div>
 
-      
+
       <h2 className="text-center text-2xl font-bold text-gray-900 mb-8">
         Create Your Account
       </h2>
 
-      
+
       <form onSubmit={handleSubmit} className="space-y-4">
-        
+
         <div className="relative">
           <div className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400">
             <svg
@@ -71,14 +89,13 @@ export default function RegisterForm({ onSwitchToLogin }: RegisterFormProps) {
           </div>
           <input
             type="text"
-            name="fullName"
+            name="name"
             placeholder="Full Name"
             required
             className="w-full rounded-xl border-0 bg-gray-100 py-4 pl-12 pr-4 text-gray-900 placeholder-gray-500 outline-none focus:bg-gray-50 focus:ring-2 focus:ring-teal-400"
           />
         </div>
 
-       
         <div className="relative">
           <div className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400">
             <svg
@@ -124,12 +141,23 @@ export default function RegisterForm({ onSwitchToLogin }: RegisterFormProps) {
             </svg>
           </div>
           <input
-            type="password"
+            type={showPassword ? "text" : "password"}
             name="password"
             placeholder="Password"
             required
-            className="w-full rounded-xl border-0 bg-gray-100 py-4 pl-12 pr-4 text-gray-900 placeholder-gray-500 outline-none focus:bg-gray-50 focus:ring-2 focus:ring-teal-400"
+            className="w-full rounded-xl border-0 bg-gray-100 py-4 pl-12 pr-12 text-gray-900 placeholder-gray-500 outline-none focus:bg-gray-50 focus:ring-2 focus:ring-teal-400"
           />
+          <button
+            type="button"
+            onClick={() => setShowPassword(!showPassword)}
+            className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-colors"
+          >
+            {showPassword ? (
+              <FaEyeSlash className="h-5 w-5" />
+            ) : (
+              <FaEye className="h-5 w-5" />
+            )}
+          </button>
         </div>
 
         {/* Confirm Password Input */}
@@ -151,15 +179,26 @@ export default function RegisterForm({ onSwitchToLogin }: RegisterFormProps) {
             </svg>
           </div>
           <input
-            type="password"
+            type={showConfirmPassword ? "text" : "password"}
             name="confirmPassword"
             placeholder="Confirm Password"
             required
-            className="w-full rounded-xl border-0 bg-gray-100 py-4 pl-12 pr-4 text-gray-900 placeholder-gray-500 outline-none focus:bg-gray-50 focus:ring-2 focus:ring-teal-400"
+            className="w-full rounded-xl border-0 bg-gray-100 py-4 pl-12 pr-12 text-gray-900 placeholder-gray-500 outline-none focus:bg-gray-50 focus:ring-2 focus:ring-teal-400"
           />
+          <button
+            type="button"
+            onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+            className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-colors"
+          >
+            {showConfirmPassword ? (
+              <FaEyeSlash className="h-5 w-5" />
+            ) : (
+              <FaEye className="h-5 w-5" />
+            )}
+          </button>
         </div>
 
-        
+
         <button
           type="submit"
           className="w-full rounded-xl bg-teal-400 py-4 font-semibold text-white transition-all hover:bg-teal-500"
@@ -168,14 +207,14 @@ export default function RegisterForm({ onSwitchToLogin }: RegisterFormProps) {
         </button>
       </form>
 
-      
+
       <div className="my-6 flex items-center gap-3">
         <div className="h-px flex-1 bg-gray-300" />
         <span className="text-sm text-gray-500">or continue with</span>
         <div className="h-px flex-1 bg-gray-300" />
       </div>
 
-   
+
       <div className="flex justify-center gap-4">
         <button className="flex h-12 w-12 items-center justify-center rounded-full border border-gray-200 transition-all hover:bg-gray-50">
           <svg className="h-6 w-6" viewBox="0 0 24 24">
@@ -205,7 +244,7 @@ export default function RegisterForm({ onSwitchToLogin }: RegisterFormProps) {
         </button>
       </div>
 
-      
+
       <p className="mt-6 text-center text-sm text-gray-600">
         Already have an account?{" "}
         <span

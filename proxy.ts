@@ -1,34 +1,43 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getAuthToken, getUserData } from "./lib/cookie";
 
-const publicRoutes = ['/login', '/register'];
-const adminRoutes = ['/admin/paths'];
-export async function proxy(request: NextRequest){
-    const  {pathname} = request.nextUrl;
-    const token =await getAuthToken();
-
+export async function proxy(request: NextRequest) {
+    const { pathname } = request.nextUrl;
+    const token = await getAuthToken();
     const user = token ? await getUserData() : null;
 
-    const isPublicRoute = publicRoutes.some(route => pathname.startsWith(route));
-    const isAdminRoute = adminRoutes.some(route => pathname.startsWith(route));
-    
+    // 1. Protected /admin routes
+    if (pathname.startsWith('/admin')) {
+        if (!token || !user || user.role !== 'admin') {
+            // If they are logged in but NOT admin, send to dashboard
+            // If they are not logged in at all, send to login
+            const redirectUrl = token ? '/dashboard' : '/login';
+            return NextResponse.redirect(new URL(redirectUrl, request.url));
+        }
+    }
 
-    if(isPublicRoute && token){
-        return NextResponse.redirect(new URL('/', request.url));
+    // 2. Protected /user and /profile routes
+    if (pathname.startsWith('/user') || pathname.startsWith('/profile')) {
+        if (!token) {
+            return NextResponse.redirect(new URL('/login', request.url));
+        }
     }
-    
-    if(pathname.startsWith('/login')){
-        return NextResponse.redirect(new URL('/', request.url));    
-    }
+
+    // // 3. Public routes (login/register) - Redirect to home if already logged in
+    // if (pathname.startsWith('/login') || pathname.startsWith('/register')) {
+    //     if (token) {
+    //         return NextResponse.redirect(new URL('/dashboard', request.url));
+    //     }
+    // }
 
     return NextResponse.next();
-
 }
 
 export const config = {
-    matcher : [
-        //what routes to protect
-        '/admin/paths',
+    matcher: [
+        '/admin/:path*',
+        '/user/:path*',
+        '/profile/:path*',
         '/login',
         '/register'
     ]

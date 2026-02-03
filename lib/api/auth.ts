@@ -1,33 +1,79 @@
-import { LoginData, RegisterData } from "@/app/(auth)/schema"
-import axios from "axios";
+import axios from "./axios";
 import { API } from "./endpoints";
 
-
-//registrationData: any -> can be RegistrationType from schema
-export const register = async (RegisterData: any) => {
-    try{
-        const response = await axios.post(API.AUtH.REGISTER, RegisterData)
-        return response.data; //response ko body
-    }catch(err: Error | any){
-        //4xx - 5xx fails in catch
-        throw new Error(
-            err.response?.data?.message //message from backend
-            || err.message //general exception message
-            || 'Registration Failed' //fallback message
-        )
-    }
+export const register = async (registrationData: any) => {
+  try {
+    const response = await axios.post(API.AUTH.REGISTER, registrationData);
+    return response.data;
+  } catch (err: any) {
+    throw new Error(
+      err.response?.data?.message || err.message || "Registration Failed"
+    );
+  }
 };
 
-export const login = async (LoginData: LoginData) => {
-    try{
-        const response = await axios.post(API.AUtH.LOGIN, LoginData)
-        return response.data; //response ko body
-    }catch(err: Error | any){
-        //4xx - 5xx fails in catch
-        throw new Error(
-            err.response?.data?.message //message from backend
-            || err.message //general exception message
-            || 'login Failed' //fallback message
-        )
-    }
-}
+export const login = async (loginData: any) => {
+  try {
+    const response = await axios.post(API.AUTH.LOGIN, loginData);
+    return response.data;
+  } catch (err: any) {
+    throw new Error(
+      err.response?.data?.message || err.message || "Login Failed"
+    );
+  }
+};
+
+export const whoami = async () => {
+  try {
+    const response = await axios.get(API.AUTH.WHOAMI);
+    return response.data;
+  } catch (err: any) {
+    throw new Error(err.response?.data?.message || err.message || "Fetching User Data Failed");
+  }
+};
+
+export const updateProfile = async (profileData: any) => {
+  try {
+    const response = await axios.put(API.AUTH.UPDATEPROFILE, profileData);
+    return response.data;
+  } catch (err: any) {
+    console.error("API Update Profile Error:", err.response?.data || err.message);
+    throw new Error(err.response?.data?.message || err.message || "Updating Profile Failed");
+  }
+};
+
+export const adminCreateUser = async (userData: FormData) => {
+  try {
+    const response = await axios.post(API.ADMIN.USER.CREATE, userData);
+    return response.data;
+  } catch (err: any) {
+    throw new Error(err.response?.data?.message || err.message || "Creating User Failed");
+  }
+};
+
+export const adminGetAllUsers = async () => {
+  try {
+    const response = await axios.get(API.ADMIN.USER.LIST);
+    return response.data;
+  } catch (err: any) {
+    throw new Error(err.response?.data?.message || err.message || "Fetching Users Failed");
+  }
+};
+
+export const adminUpdateUser = async (id: string, userData: FormData) => {
+  try {
+    const response = await axios.put(API.ADMIN.USER.UPDATE(id), userData);
+    return response.data;
+  } catch (err: any) {
+    throw new Error(err.response?.data?.message || err.message || "Updating User Failed");
+  }
+};
+
+export const adminDeleteUser = async (id: string) => {
+  try {
+    const response = await axios.delete(API.ADMIN.USER.DELETE(id));
+    return response.data;
+  } catch (err: any) {
+    throw new Error(err.response?.data?.message || err.message || "Deleting User Failed");
+  }
+};
