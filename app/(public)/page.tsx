@@ -64,10 +64,10 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/context/AuthContext";
 import { motion } from "framer-motion";
-import { 
-  FaLinkedin, 
-  FaGithub, 
-  FaInstagram, 
+import {
+  FaLinkedin,
+  FaGithub,
+  FaInstagram,
   FaTwitter,
   FaArrowDown,
   FaCrown,
@@ -81,13 +81,6 @@ export default function HomePage() {
   const { isAuthenticated, user, loading } = useAuth();
   const router = useRouter();
   const [isScrolled, setIsScrolled] = useState(false);
-
-  useEffect(() => {
-    if (loading) return;
-    if (isAuthenticated && user) {
-      router.replace(user.role === "admin" ? "/admin" : "/dashboard");
-    }
-  }, [isAuthenticated, user, loading, router]);
 
   useEffect(() => {
     const handleScroll = () => setIsScrolled(window.scrollY > 50);
@@ -107,7 +100,7 @@ export default function HomePage() {
   return (
     <div className="min-h-screen bg-gradient-to-b from-black via-gray-900 to-black text-white overflow-x-hidden">
       {/* Use only Header component */}
-      
+
 
       {/* HERO SECTION */}
       <main className="relative min-h-screen flex flex-col items-center justify-center overflow-hidden pt-24">
@@ -235,7 +228,7 @@ export default function HomePage() {
               Engineered for Excellence
             </h2>
             <p className="text-gray-300 mb-6">
-              Every Goldstar shoe combines innovative design with premium materials. 
+              Every Goldstar shoe combines innovative design with premium materials.
               Our SneakFit technology ensures optimal comfort and performance for every step.
             </p>
             <ul className="space-y-3">
