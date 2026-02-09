@@ -7,6 +7,7 @@ import { FaEye, FaEyeSlash } from "react-icons/fa";
 import { loginSchema } from "../schema";
 import { z } from "zod";
 import { handleLogin } from "@/lib/actions/auth.actions";
+import { useAuth } from "@/context/AuthContext";
 
 interface LoginFormProps {
   onSwitchToSignup?: () => void;
@@ -14,6 +15,7 @@ interface LoginFormProps {
 
 export default function LoginForm({ onSwitchToSignup }: LoginFormProps) {
   const router = useRouter();
+  const { checkAuth } = useAuth();
   const [showPassword, setShowPassword] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -41,6 +43,10 @@ export default function LoginForm({ onSwitchToSignup }: LoginFormProps) {
         if (loginResult.data?.token) {
           localStorage.setItem("token", loginResult.data.token);
         }
+
+        // Refresh AuthContext State
+        await checkAuth();
+
         // Only redirect on success!
         router.push("/dashboard");
       } else {
