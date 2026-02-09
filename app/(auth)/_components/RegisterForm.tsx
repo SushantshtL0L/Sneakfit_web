@@ -15,6 +15,8 @@ interface RegisterFormProps {
 export default function RegisterForm({ onSwitchToLogin }: RegisterFormProps) {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [role, setRole] = useState<"user" | "seller">("user");
+
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const formData = new FormData(e.currentTarget);
@@ -26,6 +28,7 @@ export default function RegisterForm({ onSwitchToLogin }: RegisterFormProps) {
       email: formData.get("email") as string,
       password: formData.get("password") as string,
       confirmPassword: formData.get("confirmPassword") as string,
+      role: role,
     };
 
     const result = registerSchema.safeParse(data);
@@ -66,6 +69,30 @@ export default function RegisterForm({ onSwitchToLogin }: RegisterFormProps) {
       <h2 className="text-center text-2xl font-bold text-gray-900 mb-8">
         Create Your Account
       </h2>
+
+      {/* Role Selection */}
+      <div className="mb-6 flex gap-4">
+        <button
+          type="button"
+          onClick={() => setRole("user")}
+          className={`flex-1 rounded-xl py-3 text-sm font-semibold transition-all ${role === "user"
+              ? "bg-teal-400 text-white shadow-md"
+              : "bg-gray-100 text-gray-600 hover:bg-gray-200"
+            }`}
+        >
+          Register as Buyer
+        </button>
+        <button
+          type="button"
+          onClick={() => setRole("seller")}
+          className={`flex-1 rounded-xl py-3 text-sm font-semibold transition-all ${role === "seller"
+              ? "bg-teal-400 text-white shadow-md"
+              : "bg-gray-100 text-gray-600 hover:bg-gray-200"
+            }`}
+        >
+          Register as Seller
+        </button>
+      </div>
 
 
       <form onSubmit={handleSubmit} className="space-y-4">
