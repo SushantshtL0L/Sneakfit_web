@@ -7,6 +7,11 @@ export const API ={
         UPDATEPROFILE: "/api/users/profile",
     },
 
+    PRODUCT: {
+      CREATE: "/api/products",
+      LIST: "/api/products",
+      DELETE: (id: string) => `/api/products/${id}`,
+    },
     ADMIN:{
         USER:{
             LIST: "/api/admin/users",

@@ -16,8 +16,8 @@ export async function proxy(request: NextRequest) {
         }
     }
 
-    // 2. Protected /user and /profile routes
-    if (pathname.startsWith('/user') || pathname.startsWith('/profile')) {
+    // 2. Protected /dashboard, /user and /profile routes
+    if (pathname.startsWith('/dashboard') || pathname.startsWith('/user') || pathname.startsWith('/profile')) {
         if (!token) {
             return NextResponse.redirect(new URL('/login', request.url));
         }
@@ -36,6 +36,7 @@ export async function proxy(request: NextRequest) {
 export const config = {
     matcher: [
         '/admin/:path*',
+        '/dashboard/:path*',
         '/user/:path*',
         '/profile/:path*',
         '/login',
