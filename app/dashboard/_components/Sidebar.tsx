@@ -1,6 +1,7 @@
 "use client";
 
 import React from "react";
+
 import { FiSearch } from "react-icons/fi";
 import Link from "next/link";
 import { useAuth } from "@/context/AuthContext";
@@ -22,19 +23,27 @@ const SidebarItem = ({ label, badge, active, href }: { label: string, badge?: st
     </Link>
 );
 
-export default function Sidebar({ activePage }: { activePage: "shoes" | "thrifts" | "sell" | "profile" | "support" | "sales" }) {
+export default function Sidebar({ activePage }: { activePage: "shoes" | "thrifts" | "sell" | "profile" | "support" | "sales" | "cart" }) {
     const { user } = useAuth();
+
     const userRole = user?.role?.toLowerCase() || "";
     const isSeller = userRole === "seller" || userRole === "admin";
+    const [mounted, setMounted] = React.useState(false);
+
+    React.useEffect(() => setMounted(true), []);
+
 
     return (
-        <aside className="w-[420px] bg-[#f5f5f5] flex flex-col h-screen sticky top-0 hidden xl:flex">
-            <div className="p-16">
-                <Link href="/dashboard">
-                    <h1 className="text-6xl font-bold tracking-tight text-gray-800 mb-20 ml-4 cursor-pointer">
-                        Sneak<span className="text-gray-900">Fit.</span>
-                    </h1>
-                </Link>
+        <aside className="w-[420px] bg-[#f5f5f5] border-r border-transparent flex flex-col h-screen sticky top-0 hidden xl:flex transition-colors duration-300">
+            <div className="p-16 flex flex-col h-full">
+                <div className="flex justify-between items-center mb-20">
+                    <Link href="/dashboard">
+                        <h1 className="text-6xl font-bold tracking-tight text-gray-800 ml-4 cursor-pointer transition-colors">
+                            Sneak<span className="text-gray-900">Fit.</span>
+                        </h1>
+                    </Link>
+
+                </div>
 
                 <div className="relative mb-24 px-4">
                     <div className="absolute inset-y-0 left-12 flex items-center pointer-events-none">
@@ -43,13 +52,13 @@ export default function Sidebar({ activePage }: { activePage: "shoes" | "thrifts
                     <input
                         type="text"
                         placeholder="Search..."
-                        className="w-full bg-[#f3e8e2] border-none rounded-[35px] py-8 pl-20 pr-8 text-2xl text-gray-800 placeholder-gray-400 focus:ring-0 outline-none transition-all"
+                        className="w-full bg-[#f3e8e2] border-none rounded-[35px] py-8 pl-20 pr-8 text-2xl text-gray-800 placeholder-gray-400 focus:ring-2 focus:ring-gray-400 outline-none transition-all"
                     />
                 </div>
 
-                <nav className="flex flex-col gap-8">
+                <nav className="flex flex-col gap-8 flex-1">
                     <SidebarItem label="Shoes" active={activePage === "shoes"} href="/dashboard" />
-                    <SidebarItem label="My Cart" href="#" />
+                    <SidebarItem label="My Cart" active={activePage === "cart"} href="/dashboard/cart" />
                     {isSeller && (
                         <SidebarItem label="Sell Item" active={activePage === "sell"} href="/dashboard/sell" />
                     )}
