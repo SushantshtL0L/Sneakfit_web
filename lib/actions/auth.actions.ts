@@ -93,9 +93,9 @@ export async function handleAdminCreateUser(formData: FormData) {
   }
 }
 
-export async function handleAdminGetAllUsers() {
+export async function handleAdminGetAllUsers(role?: string) {
   try {
-    const result = await adminGetAllUsers();
+    const result = await adminGetAllUsers(role);
     return {
       success: true,
       data: result,

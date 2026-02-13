@@ -1,6 +1,6 @@
 "use server";
 
-import { createProduct, getAllProducts, deleteProduct } from "../api/product";
+import { createProduct, getAllProducts, deleteProduct, getProductById } from "../api/product";
 import { revalidatePath } from "next/cache";
 
 export async function handleCreateProduct(formData: FormData) {
@@ -29,11 +29,24 @@ export async function handleGetAllProducts() {
   }
 }
 
+export async function handleGetProductById(id: string) {
+  try {
+    const product = await getProductById(id);
+    return {
+      success: true,
+      data: product,
+    };
+  } catch (err: any) {
+    return { success: false, message: err.message };
+  }
+}
+
 export async function handleDeleteProduct(id: string) {
   try {
     const result = await deleteProduct(id);
     revalidatePath("/dashboard");
     revalidatePath("/dashboard/thrifts");
+    revalidatePath("/admin/products");
     return {
       success: true,
       message: result.message || "Product deleted successfully",
