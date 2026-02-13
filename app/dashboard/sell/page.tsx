@@ -90,7 +90,7 @@ export default function SellPage() {
                             />
                         </div>
 
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
                             {/* Condition */}
                             <div>
                                 <label className="block text-sm font-bold text-gray-700 uppercase tracking-wider mb-3">Condition</label>
@@ -102,6 +102,18 @@ export default function SellPage() {
                                     <option value="new">Brand New</option>
                                     <option value="thrift">Thrift (Used)</option>
                                 </select>
+                            </div>
+
+                            {/* Size */}
+                            <div>
+                                <label className="block text-sm font-bold text-gray-700 uppercase tracking-wider mb-3">Size</label>
+                                <input
+                                    type="text"
+                                    name="size"
+                                    required
+                                    placeholder="42"
+                                    className="w-full bg-[#f5f5f5] border-none rounded-2xl py-4 px-6 text-gray-800 placeholder-gray-400 focus:ring-2 focus:ring-teal-400 outline-none transition-all"
+                                />
                             </div>
 
                             {/* Price */}
