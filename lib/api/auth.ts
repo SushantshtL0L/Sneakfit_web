@@ -23,6 +23,8 @@ export const login = async (loginData: any) => {
   }
 };
 
+
+
 export const whoami = async () => {
   try {
     const response = await axios.get(API.AUTH.WHOAMI);
@@ -51,9 +53,10 @@ export const adminCreateUser = async (userData: FormData) => {
   }
 };
 
-export const adminGetAllUsers = async () => {
+export const adminGetAllUsers = async (role?: string) => {
   try {
-    const response = await axios.get(API.ADMIN.USER.LIST);
+    const url = role && role !== 'all' ? `${API.ADMIN.USER.LIST}?role=${role}` : API.ADMIN.USER.LIST;
+    const response = await axios.get(url);
     return response.data;
   } catch (err: any) {
     throw new Error(err.response?.data?.message || err.message || "Fetching Users Failed");

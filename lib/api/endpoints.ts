@@ -10,6 +10,7 @@ export const API ={
     PRODUCT: {
       CREATE: "/api/products",
       LIST: "/api/products",
+      GET_ONE: (id: string) => `/api/products/${id}`,
       DELETE: (id: string) => `/api/products/${id}`,
     },
     ADMIN:{
