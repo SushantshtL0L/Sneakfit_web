@@ -22,11 +22,11 @@ export default function CartPage() {
     const sizes = ["38", "39", "40", "41", "42", "43", "44", "45"];
 
     return (
-        <div className="flex min-h-screen bg-[#f5f5f5] text-gray-900 font-sans overflow-hidden transition-colors duration-300">
+        <div className="flex min-h-screen bg-[#f5f5f5] text-gray-900 font-sans transition-colors duration-300">
             <Sidebar activePage="cart" />
 
             {/* Main Content Area */}
-            <main className="flex-1 bg-[#d9d9d9] relative flex flex-col h-screen overflow-y-auto transition-colors duration-300">
+            <main className="flex-1 bg-[#d9d9d9] relative flex flex-col transition-colors duration-300">
                 <div className="p-12 max-w-6xl mx-auto w-full flex-1 flex flex-col pb-48">
                     <h1 className="text-4xl font-bold mb-8 text-gray-800">My Cart</h1>
 
@@ -132,6 +132,7 @@ export default function CartPage() {
                         </div>
                     </div>
                 )}
+
             </main>
         </div>
     );

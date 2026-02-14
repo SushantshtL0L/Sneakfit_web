@@ -46,7 +46,7 @@ export default function SupportPage() {
         <div className="flex min-h-screen bg-[#fcfcfc] text-gray-900 font-sans">
             <Sidebar activePage="support" />
 
-            <main className="flex-1 p-8 md:p-20 bg-white overflow-y-auto">
+            <main className="flex-1 p-8 md:p-20 bg-white">
                 <div className="max-w-6xl mx-auto">
                     {/* Hero Section */}
                     <div className="mb-24 text-center">

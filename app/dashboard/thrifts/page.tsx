@@ -3,6 +3,7 @@
 import React, { useEffect, useState } from "react";
 import Sidebar from "../_components/Sidebar";
 import ProductCard from "../_components/ProductCard";
+import SupportSection from "../_components/SupportSection";
 import { handleGetAllProducts } from "@/lib/actions/product.actions";
 import { getUserData } from "@/lib/cookie";
 
@@ -54,7 +55,7 @@ export default function ThriftsPage() {
             <Sidebar activePage="thrifts" />
 
             {/* Main Content */}
-            <main className="flex-1 p-20 bg-white overflow-y-auto">
+            <main className="flex-1 p-20 bg-white">
                 <header className="flex justify-between items-center mb-20 px-4">
                     <h2 className="text-2xl font-bold text-gray-800 tracking-tight">Thrift Collection</h2>
                     <div className="text-[13px] font-bold text-gray-400 uppercase tracking-widest">
@@ -77,6 +78,8 @@ export default function ThriftsPage() {
                         </div>
                     )}
                 </div>
+
+                <SupportSection />
             </main>
         </div>
     );
