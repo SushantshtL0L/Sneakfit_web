@@ -34,7 +34,7 @@ export default function Sidebar({ activePage }: { activePage: "shoes" | "thrifts
 
 
     return (
-        <aside className="w-[420px] bg-[#f5f5f5] border-r border-transparent flex flex-col h-screen sticky top-0 hidden xl:flex transition-colors duration-300">
+        <aside className="w-[420px] bg-[#f5f5f5] border-r border-transparent flex flex-col min-h-screen hidden xl:flex transition-colors duration-300">
             <div className="p-16 flex flex-col h-full">
                 <div className="flex justify-between items-center mb-20">
                     <Link href="/dashboard">
@@ -65,7 +65,6 @@ export default function Sidebar({ activePage }: { activePage: "shoes" | "thrifts
                     <SidebarItem label="Most Sales" active={activePage === "sales"} href="#" />
                     <SidebarItem label="Thrifts" active={activePage === "thrifts"} badge="New" href="/dashboard/thrifts" />
                     <SidebarItem label="Profile" active={activePage === "profile"} href="/profile" />
-                    <SidebarItem label="Support" active={activePage === "support"} href="/dashboard/support" />
                 </nav>
             </div>
         </aside>
