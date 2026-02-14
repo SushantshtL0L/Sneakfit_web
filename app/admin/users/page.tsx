@@ -10,12 +10,19 @@ export default function AdminUsersPage() {
     const [users, setUsers] = useState<any[]>([]);
     const [loading, setLoading] = useState(true);
     const [selectedRole, setSelectedRole] = useState('all');
+    const [page, setPage] = useState(1);
+    const [totalPages, setTotalPages] = useState(1);
+    const [totalUsers, setTotalUsers] = useState(0);
+    const limit = 10;
 
     const fetchUsers = async () => {
         setLoading(true);
-        const result = await handleAdminGetAllUsers(selectedRole);
+        const result = await handleAdminGetAllUsers(selectedRole, page, limit);
         if (result.success) {
-            setUsers(result.data);
+            // The backend return
+            setUsers(result.data.users);
+            setTotalPages(result.data.totalPages);
+            setTotalUsers(result.data.total);
         } else {
             toast.error(result.message || "Failed to fetch users");
         }
@@ -24,14 +31,20 @@ export default function AdminUsersPage() {
 
     useEffect(() => {
         fetchUsers();
-    }, [selectedRole]);
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }, [selectedRole, page]);
 
     const onDelete = async (id: string) => {
-        if (confirm("Are you sure you want to delete this user?")) {
+        if (confirm("Are you sure you want to delete this user? This action cannot be undone.")) {
             const result = await handleAdminDeleteUser(id);
             if (result.success) {
                 toast.success("User deleted successfully");
-                fetchUsers();
+                // If we delete the last user on a page, go back a page
+                if (users.length === 1 && page > 1) {
+                    setPage(page - 1);
+                } else {
+                    fetchUsers();
+                }
             } else {
                 toast.error(result.message || "Failed to delete user");
             }
@@ -43,7 +56,7 @@ export default function AdminUsersPage() {
             <div className="flex justify-between items-end">
                 <div>
                     <h2 className="text-4xl font-bold text-white tracking-tight" style={{ fontFamily: "serif" }}>User Management</h2>
-                    <p className="text-gray-500 mt-2">Manage all system users and their permissions.</p>
+                    <p className="text-gray-500 mt-2">Manage {totalUsers} system users and their permissions.</p>
                 </div>
                 <Link
                     href="/admin/users/create"
@@ -53,22 +66,24 @@ export default function AdminUsersPage() {
                 </Link>
             </div>
 
-            <div className="flex gap-2">
-                {['all', 'admin', 'seller', 'user'].map((role) => (
-                    <button
-                        key={role}
-                        onClick={() => setSelectedRole(role)}
-                        className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors capitalize ${selectedRole === role
-                            ? 'bg-white text-black'
-                            : 'bg-white/5 text-gray-500 hover:bg-white/10'
-                            }`}
-                    >
-                        {role === 'all' ? 'All Users' : role.charAt(0).toUpperCase() + role.slice(1) + 's'}
-                    </button>
-                ))}
+            <div className="flex justify-between items-center">
+                <div className="flex gap-2">
+                    {['all', 'admin', 'seller', 'user'].map((role) => (
+                        <button
+                            key={role}
+                            onClick={() => { setSelectedRole(role); setPage(1); }}
+                            className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors capitalize ${selectedRole === role
+                                ? 'bg-white text-black'
+                                : 'bg-white/5 text-gray-500 hover:bg-white/10'
+                                }`}
+                        >
+                            {role === 'all' ? 'All Users' : role.charAt(0).toUpperCase() + role.slice(1) + 's'}
+                        </button>
+                    ))}
+                </div>
             </div>
 
-            <div className="bg-black rounded-3xl shadow-sm border border-white/10 overflow-hidden">
+            <div className="bg-neutral-900 rounded-3xl shadow-sm border border-white/10 overflow-hidden">
                 <table className="w-full text-left">
                     <thead>
                         <tr className="bg-white/5 border-b border-white/10 text-xs font-black uppercase tracking-widest text-gray-400">
@@ -97,9 +112,9 @@ export default function AdminUsersPage() {
                                 <tr key={user._id} className="hover:bg-white/5 transition-colors text-white">
                                     <td className="px-8 py-6">
                                         <div className="flex items-center gap-4">
-                                            <div className="w-12 h-12 rounded-2xl bg-white/10 flex items-center justify-center text-gray-400">
+                                            <div className="w-12 h-12 rounded-2xl bg-white/10 flex items-center justify-center text-gray-400 border border-white/5 overflow-hidden">
                                                 {user.image ? (
-                                                    <img src={user.image} alt="" className="w-full h-full object-cover rounded-2xl" />
+                                                    <img src={user.image.startsWith('http') ? user.image : `http://localhost:5000${user.image}`} alt="" className="w-full h-full object-cover" />
                                                 ) : (
                                                     <FiUser className="text-xl" />
                                                 )}
@@ -122,18 +137,18 @@ export default function AdminUsersPage() {
                                     <td className="px-8 py-6 text-right">
                                         <div className="flex justify-end gap-2">
                                             <Link href={`/admin/users/${user._id}`} title="View">
-                                                <div className="p-2 text-gray-500 hover:text-white transition-colors">
+                                                <div className="p-2 text-gray-500 hover:text-white transition-colors bg-white/5 rounded-lg">
                                                     <FiEye className="text-lg" />
                                                 </div>
                                             </Link>
                                             <Link href={`/admin/users/${user._id}/edit`} title="Edit">
-                                                <div className="p-2 text-gray-500 hover:text-white transition-colors">
+                                                <div className="p-2 text-gray-500 hover:text-white transition-colors bg-white/5 rounded-lg">
                                                     <FiEdit2 className="text-lg" />
                                                 </div>
                                             </Link>
                                             <button
                                                 onClick={() => onDelete(user._id)}
-                                                className="p-2 text-gray-500 hover:text-red-500 transition-colors"
+                                                className="p-2 text-gray-500 hover:text-red-500 transition-colors bg-white/5 rounded-lg"
                                                 title="Delete"
                                             >
                                                 <FiTrash2 className="text-lg" />
@@ -145,6 +160,31 @@ export default function AdminUsersPage() {
                         )}
                     </tbody>
                 </table>
+
+                {/* Pagination Controls */}
+                {!loading && users.length > 0 && (
+                    <div className="px-8 py-6 bg-white/5 border-t border-white/10 flex items-center justify-between">
+                        <div className="text-sm text-gray-500">
+                            Showing page <span className="text-white font-bold">{page}</span> of <span className="text-white font-bold">{totalPages}</span>
+                        </div>
+                        <div className="flex gap-2">
+                            <button
+                                onClick={() => setPage(p => Math.max(1, p - 1))}
+                                disabled={page === 1}
+                                className="px-4 py-2 rounded-xl text-sm font-bold bg-white/5 text-white border border-white/10 disabled:opacity-30 disabled:cursor-not-allowed hover:bg-white/10 transition-colors"
+                            >
+                                Previous
+                            </button>
+                            <button
+                                onClick={() => setPage(p => Math.min(totalPages, p + 1))}
+                                disabled={page === totalPages}
+                                className="px-4 py-2 rounded-xl text-sm font-bold bg-white text-black border border-white/10 disabled:opacity-30 disabled:cursor-not-allowed hover:scale-105 transition-transform"
+                            >
+                                Next
+                            </button>
+                        </div>
+                    </div>
+                )}
             </div>
         </div>
     );
