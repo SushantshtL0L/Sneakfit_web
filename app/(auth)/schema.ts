@@ -29,3 +29,19 @@ export const adminCreateUserSchema = z.object({
 });
 
 export type AdminCreateUserData = z.infer<typeof adminCreateUserSchema>;
+
+export const forgetPasswordSchema = z.object({
+  email: z.string().email("Enter a valid email"),
+});
+
+export type ForgetPasswordData = z.infer<typeof forgetPasswordSchema>;
+
+export const resetPasswordSchema = z.object({
+  newPassword: z.string().min(6, "Minimum 6 characters"),
+  confirmNewPassword: z.string().min(6, "Minimum 6 characters"),
+}).refine((v) => v.newPassword === v.confirmNewPassword, {
+  path: ["confirmNewPassword"],
+  message: "Passwords do not match",
+});
+
+export type ResetPasswordData = z.infer<typeof resetPasswordSchema>;

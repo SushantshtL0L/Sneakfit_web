@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 import { useState } from "react";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import { loginSchema } from "../schema";
@@ -35,11 +36,11 @@ export default function LoginForm({ onSwitchToSignup }: LoginFormProps) {
     }
 
     try {
-      // Use the actual login handler
+      //  actual login handler ho yo cahin jasle login handle garxa
       const loginResult = await handleLogin(data);
 
       if (loginResult.success) {
-        // Save token to localStorage for axios interceptor
+       
         if (loginResult.data?.token) {
           localStorage.setItem("token", loginResult.data.token);
         }
@@ -141,6 +142,12 @@ export default function LoginForm({ onSwitchToSignup }: LoginFormProps) {
               <FaEye className="h-5 w-5" />
             )}
           </button>
+        </div>
+
+        <div className="flex justify-end -mt-2 mb-4 pr-1">
+          <Link href="/forget-password" className="text-xs font-semibold text-gray-400 hover:text-teal-400 transition-all">
+            Forgot password?
+          </Link>
         </div>
 
         {/* Login Button */}
