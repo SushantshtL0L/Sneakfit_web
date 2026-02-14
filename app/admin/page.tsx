@@ -19,7 +19,7 @@ export default async function Page() {
     const adminCount = usersResult.success ? usersResult.data.filter((u: any) => u.role === 'admin').length : 0;
 
     const StatCard = ({ label, value }: { label: string, value: string | number }) => (
-        <div className="p-8 border border-white/10 rounded-3xl space-y-2 hover:bg-white/5 transition-colors">
+        <div className="p-8 bg-neutral-900 border border-white/10 rounded-3xl space-y-2 hover:bg-neutral-800 transition-colors">
             <h3 className="text-gray-500 font-medium uppercase tracking-widest text-sm">{label}</h3>
             <p className="text-6xl font-light text-white" style={{ fontFamily: "serif" }}>{value}</p>
         </div>
