@@ -44,9 +44,15 @@ export default function AdminProductsPage() {
                     <h2 className="text-4xl font-bold text-white tracking-tight" style={{ fontFamily: "serif" }}>Product Management</h2>
                     <p className="text-gray-500 mt-2">Manage all products listed on the platform.</p>
                 </div>
+                <Link
+                    href="/admin/products/create"
+                    className="flex items-center gap-2 bg-white text-black px-6 py-3 rounded-xl font-bold hover:scale-105 transition-transform"
+                >
+                    <FiPlus /> Create New Product
+                </Link>
             </div>
 
-            <div className="bg-black rounded-3xl shadow-sm border border-white/10 overflow-hidden">
+            <div className="bg-neutral-900 rounded-3xl shadow-sm border border-white/10 overflow-hidden">
                 <table className="w-full text-left">
                     <thead>
                         <tr className="bg-white/5 border-b border-white/10 text-xs font-black uppercase tracking-widest text-gray-400">
