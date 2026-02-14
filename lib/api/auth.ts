@@ -53,13 +53,27 @@ export const adminCreateUser = async (userData: FormData) => {
   }
 };
 
-export const adminGetAllUsers = async (role?: string) => {
+export const adminGetAllUsers = async (role?: string, page?: number, limit?: number) => {
   try {
-    const url = role && role !== 'all' ? `${API.ADMIN.USER.LIST}?role=${role}` : API.ADMIN.USER.LIST;
-    const response = await axios.get(url);
+    const params: any = {};
+    if (page !== undefined) params.page = page;
+    if (limit !== undefined) params.limit = limit;
+    if (role && role !== 'all') {
+      params.role = role;
+    }
+    const response = await axios.get(API.ADMIN.USER.LIST, { params });
     return response.data;
   } catch (err: any) {
     throw new Error(err.response?.data?.message || err.message || "Fetching Users Failed");
+  }
+};
+
+export const adminGetUserById = async (id: string) => {
+  try {
+    const response = await axios.get(API.ADMIN.USER.GET(id));
+    return response.data;
+  } catch (err: any) {
+    throw new Error(err.response?.data?.message || err.message || "Fetching User Failed");
   }
 };
 
@@ -78,5 +92,23 @@ export const adminDeleteUser = async (id: string) => {
     return response.data;
   } catch (err: any) {
     throw new Error(err.response?.data?.message || err.message || "Deleting User Failed");
+  }
+};
+
+export const forgotPassword = async (email: string) => {
+  try {
+    const response = await axios.post(API.AUTH.FORGOT_PASSWORD, { email });
+    return response.data;
+  } catch (err: any) {
+    throw new Error(err.response?.data?.message || err.message || "Forgot Password Request Failed");
+  }
+};
+
+export const resetPassword = async (token: string, newPassword: string) => {
+  try {
+    const response = await axios.post(API.AUTH.RESET_PASSWORD, { token, newPassword });
+    return response.data;
+  } catch (err: any) {
+    throw new Error(err.response?.data?.message || err.message || "Reset Password Failed");
   }
 };

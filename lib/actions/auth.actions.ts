@@ -1,6 +1,6 @@
 "use server";
 
-import { register, login, whoami, updateProfile, adminCreateUser, adminGetAllUsers, adminUpdateUser, adminDeleteUser } from "../api/auth";
+import { register, login, whoami, updateProfile, adminCreateUser, adminGetAllUsers, adminGetUserById, adminUpdateUser, adminDeleteUser, forgotPassword, resetPassword } from "../api/auth";
 import { setAuthToken, setUserData } from "../cookie";
 import { revalidatePath } from "next/cache";
 
@@ -93,9 +93,21 @@ export async function handleAdminCreateUser(formData: FormData) {
   }
 }
 
-export async function handleAdminGetAllUsers(role?: string) {
+export async function handleAdminGetAllUsers(role?: string, page?: number, limit?: number) {
   try {
-    const result = await adminGetAllUsers(role);
+    const result = await adminGetAllUsers(role, page, limit);
+    return {
+      success: true,
+      data: result,
+    };
+  } catch (err: any) {
+    return { success: false, message: err.message };
+  }
+}
+
+export async function handleAdminGetUserById(id: string) {
+  try {
+    const result = await adminGetUserById(id);
     return {
       success: true,
       data: result,
@@ -127,6 +139,30 @@ export async function handleAdminDeleteUser(id: string) {
     return {
       success: true,
       message: result.message || "User deleted successfully",
+    };
+  } catch (err: any) {
+    return { success: false, message: err.message };
+  }
+}
+
+export async function handleForgotPassword(email: string) {
+  try {
+    const result = await forgotPassword(email);
+    return {
+      success: true,
+      message: result.message || "Reset link sent successfully",
+    };
+  } catch (err: any) {
+    return { success: false, message: err.message };
+  }
+}
+
+export async function handleResetPassword(token: string, newPassword: string) {
+  try {
+    const result = await resetPassword(token, newPassword);
+    return {
+      success: true,
+      message: result.message || "Password reset successful",
     };
   } catch (err: any) {
     return { success: false, message: err.message };
