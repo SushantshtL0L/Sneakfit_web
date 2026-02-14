@@ -7,6 +7,7 @@ import { useAuth } from "@/context/AuthContext";
 import Link from "next/link";
 
 import Sidebar from "../dashboard/_components/Sidebar";
+import SupportSection from "../dashboard/_components/SupportSection";
 
 export default function ProfilePage() {
     const { user, checkAuth } = useAuth();
@@ -73,7 +74,7 @@ export default function ProfilePage() {
             <Sidebar activePage="profile" />
 
             {/* Main Content */}
-            <main className="flex-1 p-8 md:p-20 bg-white overflow-y-auto">
+            <main className="flex-1 p-8 md:p-20 bg-white">
                 <div className="max-w-4xl mx-auto">
                     <header className="mb-16">
                         <h2 className="text-6xl font-bold text-gray-900 tracking-tighter" style={{ fontFamily: "serif" }}>My Profile</h2>
@@ -198,6 +199,8 @@ export default function ProfilePage() {
                         </div>
                     </div>
                 </div>
+
+                <SupportSection />
             </main>
         </div>
     );
