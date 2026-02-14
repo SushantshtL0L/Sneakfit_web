@@ -5,6 +5,8 @@ export const API ={
         LOGOUT: "/api/auth/logout",
         WHOAMI: "/api/auth/whoami",
         UPDATEPROFILE: "/api/users/profile",
+        FORGOT_PASSWORD: "/api/auth/forgot-password",
+        RESET_PASSWORD: "/api/auth/reset-password",
     },
 
     PRODUCT: {
