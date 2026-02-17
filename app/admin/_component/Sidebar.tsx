@@ -2,22 +2,57 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { motion } from "framer-motion";
+import { FiGrid, FiUsers, FiShoppingBag, FiLogOut, FiArrowRight } from "react-icons/fi";
 
 const ADMIN_LINKS = [
-    { href: "/admin", label: "Dashboard" },
-    { href: "/admin/users", label: "Users" },
-    { href: "/admin/products", label: "Products" },
+    { href: "/admin", label: "Dashboard", icon: FiGrid },
+    { href: "/admin/users", label: "Users", icon: FiUsers },
+    { href: "/admin/products", label: "Products", icon: FiShoppingBag },
 ];
 
-const SidebarItem = ({ label, active, href }: { label: string, active?: boolean, href: string }) => (
-    <Link href={href}>
-        <div
-            className={`px-8 py-3 cursor-pointer transition-all duration-200 hover:opacity-100 flex items-center justify-between group opacity-60 ${active ? 'opacity-100' : ''}`}
+const SidebarItem = ({
+    label,
+    active,
+    href,
+    icon: Icon
+}: {
+    label: string,
+    active?: boolean,
+    href: string,
+    icon: any
+}) => (
+    <Link href={href} className="relative group">
+        <motion.div
+            whileHover={{ x: 4 }}
+            className={`
+                px-6 py-4 rounded-2xl flex items-center justify-between transition-all duration-300
+                ${active
+                    ? 'bg-white/10 text-white shadow-[0_0_20px_rgba(255,255,255,0.05)]'
+                    : 'text-neutral-400 hover:text-white hover:bg-white/[0.02]'}
+            `}
         >
-            <div className="flex items-center gap-3">
-                <span className={`text-5xl font-light tracking-tight ${active ? "text-white" : "text-gray-500"}`} style={{ fontFamily: "serif" }}>{label}</span>
+            <div className="flex items-center gap-4">
+                <div className={`
+                    p-2 rounded-xl transition-colors
+                    ${active ? 'bg-white text-black' : 'bg-neutral-800 text-neutral-400 group-hover:text-white group-hover:bg-neutral-700'}
+                `}>
+                    <Icon className="text-xl" />
+                </div>
+                <span className="text-lg font-medium tracking-wide font-sans">{label}</span>
             </div>
-        </div>
+
+            {active && (
+                <motion.div
+                    layoutId="active-pill"
+                    className="w-1.5 h-6 bg-white rounded-full ml-auto"
+                    transition={{ type: "spring", stiffness: 300, damping: 30 }}
+                />
+            )}
+            {!active && (
+                <FiArrowRight className="opacity-0 group-hover:opacity-100 transition-opacity text-neutral-500 transform -translate-x-2 group-hover:translate-x-0" />
+            )}
+        </motion.div>
     </Link>
 );
 
@@ -27,24 +62,51 @@ export default function Sidebar() {
     const isActive = (href: string) => href === "/admin" ? pathname === href : pathname?.startsWith(href);
 
     return (
-        <aside className="w-[420px] bg-neutral-900 flex flex-col h-screen sticky top-0 hidden xl:flex border-r border-white/10">
-            <div className="p-16">
-                <Link href="/admin">
-                    <h1 className="text-6xl font-bold tracking-tight text-white mb-20 ml-4 cursor-pointer">
-                        Admin<span className="text-gray-500">Panel.</span>
-                    </h1>
-                </Link>
+        <aside className="w-[320px] bg-neutral-950 flex flex-col h-screen sticky top-0 hidden xl:flex border-r border-white/5">
+            <div className="p-10 flex flex-col h-full">
+                <div className="mb-12 px-4">
+                    <Link href="/admin">
+                        <div className="flex flex-col gap-0">
+                            <h1 className="text-3xl font-bold tracking-tighter text-white cursor-pointer group flex items-center gap-2">
+                                <div className="w-8 h-8 bg-white rounded-lg flex items-center justify-center">
+                                    <div className="w-4 h-4 bg-black rounded-sm transform rotate-45"></div>
+                                </div>
+                                <span>SneakFit<span className="text-neutral-500 font-light">.Admin</span></span>
+                            </h1>
+                        </div>
+                    </Link>
+                </div>
 
-                <nav className="flex flex-col gap-8">
-                    {ADMIN_LINKS.map(link => (
-                        <SidebarItem
-                            key={link.href}
-                            label={link.label}
-                            active={isActive(link.href)}
-                            href={link.href}
-                        />
-                    ))}
-                </nav>
+                <div className="flex-1">
+                    <div className="text-[10px] uppercase tracking-[0.2em] text-neutral-500 font-bold mb-6 px-6 opacity-60">
+                        Management
+                    </div>
+                    <nav className="flex flex-col gap-2">
+                        {ADMIN_LINKS.map(link => (
+                            <SidebarItem
+                                key={link.href}
+                                label={link.label}
+                                active={isActive(link.href)}
+                                href={link.href}
+                                icon={link.icon}
+                            />
+                        ))}
+                    </nav>
+                </div>
+
+                <div className="mt-auto border-t border-white/5 pt-8 px-2">
+                    <button className="w-full flex items-center gap-4 px-6 py-4 rounded-2xl text-red-400 hover:bg-red-500/10 transition-all duration-300 group">
+                        <div className="p-2 rounded-xl bg-red-500/5 group-hover:bg-red-500/20 transition-colors">
+                            <FiLogOut className="text-xl" />
+                        </div>
+                        <span className="text-lg font-medium">Logout</span>
+                    </button>
+
+                    <div className="mt-6 px-4 flex items-center gap-3 opacity-40">
+                        <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse"></div>
+                        <span className="text-xs text-neutral-500 uppercase tracking-widest font-bold">System Online</span>
+                    </div>
+                </div>
             </div>
         </aside>
     );
