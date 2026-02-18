@@ -4,10 +4,13 @@ import React, { useEffect, useState, use } from "react";
 import Sidebar from "../../_components/Sidebar";
 import { handleGetProductById } from "@/lib/actions/product.actions";
 import { motion } from "framer-motion";
-import { FiShoppingBag, FiUser, FiPlus, FiMinus, FiCheck, FiStar } from "react-icons/fi";
-import Link from "next/link";
 import { useCart } from "@/context/CartContext";
+import { useAuth } from "@/context/AuthContext";
 import { toast } from "react-toastify";
+import { useRouter } from "next/navigation";
+import Link from "next/link";
+import { handleDeleteProduct } from "@/lib/actions/product.actions";
+import { FiShoppingBag, FiUser, FiPlus, FiMinus, FiCheck, FiStar, FiEdit, FiTrash2 } from "react-icons/fi";
 
 export default function ProductDetailPage({ params }: { params: Promise<{ id: string }> }) {
     const { id } = use(params);
@@ -15,6 +18,31 @@ export default function ProductDetailPage({ params }: { params: Promise<{ id: st
     const [loading, setLoading] = useState(true);
     const [selectedSize, setSelectedSize] = useState("42");
     const { addToCart } = useCart();
+    const { user } = useAuth();
+    const router = useRouter();
+
+
+    const isAdmin = user?.role === "admin";
+    const isOwner = user && product?.seller && (
+        (typeof product.seller === 'string' ? product.seller : product.seller._id?.toString() || product.seller.id?.toString()) === user.id
+    );
+    const canManage = isAdmin || isOwner;
+
+    const onDelete = async () => {
+        if (!window.confirm("Are you sure you want to delete this product?")) return;
+
+        try {
+            const result = await handleDeleteProduct(product._id || product.id);
+            if (result.success) {
+                toast.success("Product deleted successfully");
+                router.push("/dashboard");
+            } else {
+                toast.error(result.message);
+            }
+        } catch (error) {
+            toast.error("Failed to delete product");
+        }
+    };
 
     const dummyProducts = [
         {
@@ -254,6 +282,24 @@ export default function ProductDetailPage({ params }: { params: Promise<{ id: st
                                     Add To Cart
                                 </button>
                             </div>
+
+                            {canManage && (
+                                <div className="flex items-center gap-4 mt-4">
+                                    <Link
+                                        href={`/dashboard/product/${product._id || product.id}/edit`}
+                                        className="flex-1 bg-neutral-900 text-white py-4 rounded-xl flex items-center justify-center gap-2 font-bold hover:bg-black transition-colors"
+                                    >
+                                        <FiEdit /> Edit Product
+                                    </Link>
+                                    <button
+                                        onClick={onDelete}
+                                        className="bg-red-500/10 text-red-500 p-4 rounded-xl hover:bg-red-500 hover:text-white transition-all"
+                                        title="Delete Product"
+                                    >
+                                        <FiTrash2 className="text-xl" />
+                                    </button>
+                                </div>
+                            )}
                         </motion.div>
                     </div>
 
