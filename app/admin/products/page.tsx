@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from "react";
 import Link from "next/link";
-import { FiPlus, FiTrash2, FiEye, FiBox } from "react-icons/fi";
+import { FiPlus, FiTrash2, FiEye, FiBox, FiEdit } from "react-icons/fi";
 import { handleGetAllProducts, handleDeleteProduct } from "@/lib/actions/product.actions";
 import { toast } from "react-toastify";
 
@@ -110,6 +110,11 @@ export default function AdminProductsPage() {
                                             <Link href={`/dashboard/product/${product._id}`} title="View" target="_blank">
                                                 <div className="p-2 text-gray-500 hover:text-white transition-colors">
                                                     <FiEye className="text-lg" />
+                                                </div>
+                                            </Link>
+                                            <Link href={`/dashboard/product/${product._id}/edit`} title="Edit">
+                                                <div className="p-2 text-gray-500 hover:text-blue-500 transition-colors">
+                                                    <FiEdit className="text-lg" />
                                                 </div>
                                             </Link>
                                             <button
