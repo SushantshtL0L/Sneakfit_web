@@ -1,13 +1,18 @@
 "use client";
 
 import React from "react";
-import { FiHeart, FiStar, FiTrash2, FiArrowRight } from "react-icons/fi";
+import { FiHeart, FiStar, FiTrash2, FiArrowRight, FiEdit } from "react-icons/fi";
 import { motion } from "framer-motion";
 import { handleDeleteProduct } from "@/lib/actions/product.actions";
 import { toast } from "react-toastify";
 import Link from "next/link";
+import { useAuth } from "@/context/AuthContext";
+import { useRouter } from "next/navigation";
 
 const ProductCard = ({ product, currentUserId, onDeleted }: { product: any, currentUserId?: string, onDeleted?: (id: string) => void }) => {
+    const { user } = useAuth();
+    const router = useRouter();
+
     // Logic to handle image URLs (local uploads vs external links)
     const imageUrl = product.image.startsWith("http")
         ? product.image
@@ -16,6 +21,13 @@ const ProductCard = ({ product, currentUserId, onDeleted }: { product: any, curr
     const isOwner = currentUserId && product.seller && (
         (typeof product.seller === 'string' ? product.seller : product.seller._id?.toString() || product.seller.id?.toString()) === currentUserId
     );
+
+    const isAdmin = user?.role === "admin";
+    const canManage = isOwner || isAdmin;
+
+    const navigateToDetail = () => {
+        router.push(`/dashboard/product/${product._id || product.id}`);
+    };
 
     const onDelete = async () => {
         if (!window.confirm("Are you sure you want to delete this listing?")) return;
@@ -37,9 +49,10 @@ const ProductCard = ({ product, currentUserId, onDeleted }: { product: any, curr
         <motion.div
             whileHover={{ y: -8 }}
             transition={{ type: "spring", stiffness: 300, damping: 20 }}
-            className="group"
+            className="group cursor-pointer"
+            onClick={navigateToDetail}
         >
-            <Link href={`/dashboard/product/${product._id || product.id}`} className="cursor-pointer block">
+            <div className="block">
                 <div className="relative aspect-[4/5] bg-white rounded-[40px] overflow-hidden shadow-[0_8px_30px_rgb(0,0,0,0.04)] group-hover:shadow-[0_20px_40px_rgb(0,0,0,0.08)] transition-all duration-500 border border-neutral-100">
                     <img
                         src={imageUrl}
@@ -58,22 +71,34 @@ const ProductCard = ({ product, currentUserId, onDeleted }: { product: any, curr
                     </div>
 
                     {/* Actions */}
-                    <div className="absolute top-6 right-6 flex flex-col gap-3">
-                        <button className="w-10 h-10 bg-white/80 backdrop-blur-md rounded-xl flex items-center justify-center text-neutral-400 hover:text-red-500 transition-colors shadow-sm">
+                    <div className="absolute top-6 right-6 flex flex-col gap-3 z-10">
+                        <button
+                            onClick={(e) => e.stopPropagation()}
+                            className="w-10 h-10 bg-white/80 backdrop-blur-md rounded-xl flex items-center justify-center text-neutral-400 hover:text-red-500 transition-colors shadow-sm"
+                        >
                             <FiHeart className="text-xl" />
                         </button>
 
-                        {isOwner && (
-                            <button
-                                onClick={(e) => {
-                                    e.preventDefault();
-                                    e.stopPropagation();
-                                    onDelete();
-                                }}
-                                className="w-10 h-10 bg-red-500/10 backdrop-blur-md rounded-xl flex items-center justify-center text-red-500 hover:bg-red-500 hover:text-white transition-all shadow-sm"
-                            >
-                                <FiTrash2 className="text-xl" />
-                            </button>
+                        {canManage && (
+                            <>
+                                <Link
+                                    href={`/dashboard/product/${product._id || product.id}/edit`}
+                                    onClick={(e) => e.stopPropagation()}
+                                    className="w-10 h-10 bg-blue-500/10 backdrop-blur-md rounded-xl flex items-center justify-center text-blue-500 hover:bg-blue-500 hover:text-white transition-all shadow-sm"
+                                >
+                                    <FiEdit className="text-xl" />
+                                </Link>
+                                <button
+                                    onClick={(e) => {
+                                        e.preventDefault();
+                                        e.stopPropagation();
+                                        onDelete();
+                                    }}
+                                    className="w-10 h-10 bg-red-500/10 backdrop-blur-md rounded-xl flex items-center justify-center text-red-500 hover:bg-red-500 hover:text-white transition-all shadow-sm"
+                                >
+                                    <FiTrash2 className="text-xl" />
+                                </button>
+                            </>
                         )}
                     </div>
 
@@ -119,7 +144,7 @@ const ProductCard = ({ product, currentUserId, onDeleted }: { product: any, curr
                         </div>
                     </div>
                 </div>
-            </Link>
+            </div>
         </motion.div>
     );
 };
