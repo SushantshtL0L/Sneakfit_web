@@ -1,6 +1,6 @@
 "use server";
 
-import { createProduct, getAllProducts, deleteProduct, getProductById } from "../api/product";
+import { createProduct, getAllProducts, deleteProduct, getProductById, updateProduct } from "../api/product";
 import { revalidatePath } from "next/cache";
 
 export async function handleCreateProduct(formData: FormData) {
@@ -50,6 +50,22 @@ export async function handleDeleteProduct(id: string) {
     return {
       success: true,
       message: result.message || "Product deleted successfully",
+    };
+  } catch (err: any) {
+    return { success: false, message: err.message };
+  }
+}
+
+export async function handleUpdateProduct(id: string, formData: FormData) {
+  try {
+    const result = await updateProduct(id, formData);
+    revalidatePath("/dashboard");
+    revalidatePath(`/dashboard/product/${id}`);
+    revalidatePath("/admin/products");
+    return {
+      success: true,
+      message: result.message || "Product updated successfully",
+      data: result.product,
     };
   } catch (err: any) {
     return { success: false, message: err.message };
