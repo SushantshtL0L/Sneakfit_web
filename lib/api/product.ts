@@ -52,3 +52,18 @@ export const deleteProduct = async (id: string) => {
     );
   }
 };
+
+export const updateProduct = async (id: string, formData: FormData) => {
+  try {
+    const response = await axios.put(API.PRODUCT.GET_ONE(id), formData, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    });
+    return response.data;
+  } catch (err: any) {
+    throw new Error(
+      err.response?.data?.message || err.message || "Product Update Failed"
+    );
+  }
+};
