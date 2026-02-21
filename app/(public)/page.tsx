@@ -98,17 +98,17 @@ export default function HomePage() {
   ];
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-black via-gray-900 to-black text-white overflow-x-hidden">
+    <div className="min-h-screen !bg-black text-white overflow-x-hidden">
       {/* Use only Header component */}
 
 
       {/* HERO SECTION */}
-      <main className="relative min-h-screen flex flex-col items-center justify-center overflow-hidden pt-24">
+      <main className="relative min-h-screen flex flex-col items-center justify-center overflow-hidden pt-24 !bg-black">
         <motion.h1
-          initial={{ opacity: 0, y: -20 }}
-          animate={{ opacity: 1, y: 0 }}
+          initial={{ opacity: 0, scale: 0.8 }}
+          animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 0.8 }}
-          className="absolute text-[150px] md:text-[230px] lg:text-[250px] xl:text-[300px] font-extrabold text-red-600/90 opacity-90 top-20 md:top-10 uppercase tracking-tighter leading-none select-none"
+          className="absolute text-[150px] md:text-[230px] lg:text-[250px] xl:text-[300px] font-extrabold text-[#c30101] opacity-100 top-20 md:top-10 uppercase tracking-tighter leading-none select-none z-0"
         >
           GOLDSTAR
         </motion.h1>
@@ -135,7 +135,7 @@ export default function HomePage() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 0.4 }}
-          className="absolute bottom-8 md:bottom-12 text-center z-10"
+          className="absolute bottom-16 text-center z-10"
         >
           <h2 className="text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-extrabold text-white/90 mb-2">
             THE NEW 2025
@@ -148,15 +148,10 @@ export default function HomePage() {
         <motion.div
           animate={{ y: [0, 10, 0] }}
           transition={{ repeat: Infinity, duration: 1.5 }}
-          className="absolute bottom-4 md:bottom-6 left-1/2 transform -translate-x-1/2 z-10"
+          className="absolute bottom-6 left-1/2 transform -translate-x-1/2 z-10"
         >
           <FaArrowDown className="text-xl md:text-2xl text-white/60" />
         </motion.div>
-
-        {/* Background Gradient Effects */}
-        <div className="absolute inset-0 bg-gradient-to-b from-transparent via-black/50 to-black"></div>
-        <div className="absolute top-1/4 left-1/4 w-64 h-64 md:w-96 md:h-96 bg-red-500/5 rounded-full blur-3xl"></div>
-        <div className="absolute bottom-1/4 right-1/4 w-64 h-64 md:w-96 md:h-96 bg-orange-500/5 rounded-full blur-3xl"></div>
       </main>
 
       {/* FEATURES SECTION */}
