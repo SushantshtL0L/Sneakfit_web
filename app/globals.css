@@ -1,14 +1,37 @@
 @import "tailwindcss";
 
 :root {
-  --background: #000000;
-  --foreground: #ffffff;
+  --background: #ffffff;
+  --foreground: #171717;
+  --card-bg: #fcfcfc;
+  --sidebar-bg: #f8f9fa;
+  --border-color: #f1f3f5;
+  --accent: #6db56f;
+}
+
+/* Base dark class for global CSS variables */
+.dark {
+  --background: #0a0a0a !important;
+  --foreground: #ededed !important;
+  --card-bg: #111111 !important;
+  --sidebar-bg: #0d0d0d !important;
+  --border-color: #1a1a1a !important;
+  --accent: #6db56f !important;
+  color-scheme: dark;
 }
 
 body {
-  background: var(--background);
+  background-color: var(--background);
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
+  transition: background-color 0.3s ease, color 0.3s ease;
+  min-height: 100vh;
+}
+
+/* Explicit overrides for stubborn components */
+aside {
+  background-color: var(--sidebar-bg);
+  border-color: var(--border-color);
 }
 
 @layer utilities {

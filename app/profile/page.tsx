@@ -5,12 +5,14 @@ import { FiSearch, FiCamera, FiUser, FiMail, FiMapPin, FiPhone } from "react-ico
 import { motion, AnimatePresence } from "framer-motion";
 import { useAuth } from "@/context/AuthContext";
 import Link from "next/link";
+import { useTheme } from "@/context/ThemeContext";
 
 import Sidebar from "../dashboard/_components/Sidebar";
 import SupportSection from "../dashboard/_components/SupportSection";
 
 export default function ProfilePage() {
     const { user, checkAuth } = useAuth();
+    const { theme } = useTheme();
     const [profileImage, setProfileImage] = useState<string | null>(null);
     const [isSaving, setIsSaving] = useState(false);
 
@@ -69,15 +71,15 @@ export default function ProfilePage() {
     };
 
     return (
-        <div className="flex min-h-screen bg-[#fcfcfc] text-gray-900 font-sans">
+        <div className={`flex min-h-screen font-sans transition-colors duration-300 ${theme === 'dark' ? 'bg-[#0a0a0a]' : 'bg-[#fcfcfc]'}`}>
             {/* Sidebar - Consistent with Dashboard */}
             <Sidebar activePage="profile" />
 
             {/* Main Content */}
-            <main className="flex-1 p-8 md:p-20 bg-white">
+            <main className={`flex-1 p-8 md:p-20 transition-colors duration-300 ${theme === 'dark' ? 'bg-[#0a0a0a]' : 'bg-white'}`}>
                 <div className="max-w-4xl mx-auto">
                     <header className="mb-16">
-                        <h2 className="text-6xl font-bold text-gray-900 tracking-tighter" style={{ fontFamily: "serif" }}>My Profile</h2>
+                        <h2 className={`text-6xl font-bold tracking-tighter transition-colors ${theme === 'dark' ? 'text-white' : 'text-gray-900'}`} style={{ fontFamily: "serif" }}>My Profile</h2>
                         <p className="text-gray-400 text-xl mt-4">Manage your account information and preferences.</p>
                     </header>
 
@@ -85,7 +87,7 @@ export default function ProfilePage() {
                         {/* Left: Avatar Upload */}
                         <div className="flex flex-col items-center gap-8">
                             <div className="relative group cursor-pointer" onClick={handleImageClick}>
-                                <div className="w-64 h-64 rounded-[60px] bg-[#f0f0f0] overflow-hidden border-8 border-white shadow-2xl transition-transform duration-500 group-hover:scale-105">
+                                <div className={`w-64 h-64 rounded-[60px] overflow-hidden border-8 shadow-2xl transition-all duration-500 group-hover:scale-105 ${theme === 'dark' ? 'bg-neutral-800 border-neutral-900 shadow-black/40' : 'bg-[#f0f0f0] border-white'}`}>
                                     {profileImage || getImageUrl(user?.image) ? (
                                         <img
                                             src={profileImage || getImageUrl(user?.image)!}
@@ -93,8 +95,8 @@ export default function ProfilePage() {
                                             className="w-full h-full object-cover"
                                         />
                                     ) : (
-                                        <div className="w-full h-full flex items-center justify-center bg-[#ececec]">
-                                            <FiUser className="text-8xl text-gray-300" />
+                                        <div className={`w-full h-full flex items-center justify-center ${theme === 'dark' ? 'bg-neutral-800' : 'bg-[#ececec]'}`}>
+                                            <FiUser className={`text-8xl ${theme === 'dark' ? 'text-neutral-600' : 'text-gray-300'}`} />
                                         </div>
                                     )}
 
@@ -107,7 +109,7 @@ export default function ProfilePage() {
                                 </div>
 
                                 {/* Floating Edit Button */}
-                                <div className="absolute -bottom-4 -right-4 bg-black text-white p-5 rounded-3xl shadow-xl hover:scale-110 transition-transform">
+                                <div className={`absolute -bottom-4 -right-4 p-5 rounded-3xl shadow-xl hover:scale-110 transition-transform ${theme === 'dark' ? 'bg-white text-black' : 'bg-black text-white'}`}>
                                     <FiCamera className="text-2xl" />
                                 </div>
                             </div>
@@ -134,7 +136,8 @@ export default function ProfilePage() {
                                             ref={nameRef}
                                             defaultValue={user?.name || ""}
                                             placeholder="Enter your name"
-                                            className="w-full bg-[#f9f9f9] border-none rounded-[25px] py-6 pl-16 pr-6 text-xl text-gray-800 placeholder-gray-300 focus:ring-2 focus:ring-gray-100 outline-none transition-all"
+                                            className={`w-full border-none rounded-[25px] py-6 pl-16 pr-6 text-xl outline-none transition-all focus:ring-2 ${theme === 'dark' ? 'bg-neutral-800 text-white placeholder-neutral-600 focus:ring-neutral-700' : 'bg-[#f9f9f9] text-gray-800 placeholder-gray-300 focus:ring-gray-100'
+                                                }`}
                                         />
                                     </div>
                                 </div>
@@ -148,7 +151,8 @@ export default function ProfilePage() {
                                             ref={emailRef}
                                             defaultValue={user?.email || ""}
                                             placeholder="Enter your email"
-                                            className="w-full bg-[#f9f9f9] border-none rounded-[25px] py-6 pl-16 pr-6 text-xl text-gray-800 placeholder-gray-300 focus:ring-2 focus:ring-gray-100 outline-none transition-all"
+                                            className={`w-full border-none rounded-[25px] py-6 pl-16 pr-6 text-xl outline-none transition-all focus:ring-2 ${theme === 'dark' ? 'bg-neutral-800 text-white placeholder-neutral-600 focus:ring-neutral-700' : 'bg-[#f9f9f9] text-gray-800 placeholder-gray-300 focus:ring-gray-100'
+                                                }`}
                                         />
                                     </div>
                                 </div>
@@ -162,7 +166,8 @@ export default function ProfilePage() {
                                             ref={phoneRef}
                                             defaultValue={user?.phone || ""}
                                             placeholder="Enter phone number"
-                                            className="w-full bg-[#f9f9f9] border-none rounded-[25px] py-6 pl-16 pr-6 text-xl text-gray-800 placeholder-gray-300 focus:ring-2 focus:ring-gray-100 outline-none transition-all"
+                                            className={`w-full border-none rounded-[25px] py-6 pl-16 pr-6 text-xl outline-none transition-all focus:ring-2 ${theme === 'dark' ? 'bg-neutral-800 text-white placeholder-neutral-600 focus:ring-neutral-700' : 'bg-[#f9f9f9] text-gray-800 placeholder-gray-300 focus:ring-gray-100'
+                                                }`}
                                         />
                                     </div>
                                 </div>
@@ -176,7 +181,8 @@ export default function ProfilePage() {
                                             ref={locationRef}
                                             defaultValue={user?.location || ""}
                                             placeholder="Enter your location"
-                                            className="w-full bg-[#f9f9f9] border-none rounded-[25px] py-6 pl-16 pr-6 text-xl text-gray-800 placeholder-gray-300 focus:ring-2 focus:ring-gray-100 outline-none transition-all"
+                                            className={`w-full border-none rounded-[25px] py-6 pl-16 pr-6 text-xl outline-none transition-all focus:ring-2 ${theme === 'dark' ? 'bg-neutral-800 text-white placeholder-neutral-600 focus:ring-neutral-700' : 'bg-[#f9f9f9] text-gray-800 placeholder-gray-300 focus:ring-gray-100'
+                                                }`}
                                         />
                                     </div>
                                 </div>
@@ -186,11 +192,12 @@ export default function ProfilePage() {
                                 <button
                                     onClick={handleSave}
                                     disabled={isSaving}
-                                    className="bg-black text-white text-xl font-bold py-8 px-16 rounded-[30px] shadow-2xl hover:scale-[1.02] active:scale-95 transition-all disabled:opacity-50 disabled:scale-100 w-full md:w-auto"
+                                    className={`text-xl font-bold py-8 px-16 rounded-[30px] shadow-2xl hover:scale-[1.02] active:scale-95 transition-all disabled:opacity-50 disabled:scale-100 w-full md:w-auto ${theme === 'dark' ? 'bg-white text-black shadow-black/20' : 'bg-black text-white shadow-neutral-200'
+                                        }`}
                                 >
                                     {isSaving ? (
                                         <div className="flex items-center gap-3">
-                                            <div className="w-5 h-5 border-2 border-white/20 border-t-white rounded-full animate-spin" />
+                                            <div className={`w-5 h-5 border-2 rounded-full animate-spin ${theme === 'dark' ? 'border-black/20 border-t-black' : 'border-white/20 border-t-white'}`} />
                                             Saving Changes...
                                         </div>
                                     ) : "Save Changes"}
