@@ -6,8 +6,10 @@ import ProductCard from "../_components/ProductCard";
 import SupportSection from "../_components/SupportSection";
 import { handleGetAllProducts } from "@/lib/actions/product.actions";
 import { getUserData } from "@/lib/cookie";
+import { useTheme } from "@/context/ThemeContext";
 
 export default function ThriftsPage() {
+    const { theme } = useTheme();
     const [liveProducts, setLiveProducts] = useState<any[]>([]);
     const [currentUserId, setCurrentUserId] = useState<string | undefined>();
 
@@ -51,13 +53,13 @@ export default function ThriftsPage() {
     };
 
     return (
-        <div className="flex min-h-screen bg-[#fcfcfc] text-gray-900 font-sans">
+        <div className={`flex min-h-screen font-sans transition-colors duration-300 ${theme === 'dark' ? 'bg-[#0a0a0a]' : 'bg-[#fcfcfc]'}`}>
             <Sidebar activePage="thrifts" />
 
             {/* Main Content */}
-            <main className="flex-1 p-20 bg-white">
+            <main className={`flex-1 p-20 transition-colors duration-300 ${theme === 'dark' ? 'bg-[#0a0a0a]' : 'bg-white'}`}>
                 <header className="flex justify-between items-center mb-20 px-4">
-                    <h2 className="text-2xl font-bold text-gray-800 tracking-tight">Thrift Collection</h2>
+                    <h2 className={`text-2xl font-bold tracking-tight transition-colors ${theme === 'dark' ? 'text-white' : 'text-gray-800'}`}>Thrift Collection</h2>
                     <div className="text-[13px] font-bold text-gray-400 uppercase tracking-widest">
                         {allThrifts.length} items found
                     </div>
