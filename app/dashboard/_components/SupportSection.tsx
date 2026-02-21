@@ -9,27 +9,27 @@ import {
 const SupportCard = ({ iconPath, title, description, color }: { iconPath: React.ReactNode, title: string, description: string, color: string }) => (
     <motion.div
         whileHover={{ y: -10 }}
-        className="bg-[#f9f9f9] p-10 rounded-[40px] shadow-sm border border-gray-100 flex flex-col items-start gap-6 cursor-pointer group"
+        className="bg-[var(--card-bg)] p-10 rounded-[40px] shadow-sm border border-[var(--border-color)] flex flex-col items-start gap-6 cursor-pointer group"
     >
         <div className={`p-6 rounded-3xl ${color} bg-opacity-10 text-2xl group-hover:scale-110 transition-transform duration-300`}>
             {iconPath}
         </div>
         <div>
-            <h3 className="text-2xl font-bold text-gray-900 mb-2">{title}</h3>
-            <p className="text-gray-500 leading-relaxed text-lg">{description}</p>
+            <h3 className="text-2xl font-bold text-[var(--foreground)] mb-2">{title}</h3>
+            <p className="text-neutral-500 leading-relaxed text-lg">{description}</p>
         </div>
     </motion.div>
 );
 
 const SupportSection = () => {
     return (
-        <section className="mt-40 pt-40 border-t border-gray-100">
+        <section className="mt-40 pt-40 border-t border-[var(--border-color)]">
             <div className="max-w-6xl mx-auto">
                 <div className="mb-24 text-center">
-                    <h2 className="text-6xl font-bold tracking-tighter text-gray-900 mb-8" style={{ fontFamily: 'serif' }}>
+                    <h2 className="text-6xl font-bold tracking-tighter text-[var(--foreground)] mb-8">
                         How can we <span className="text-teal-400">help?</span>
                     </h2>
-                    <p className="text-xl text-gray-400 max-w-2xl mx-auto leading-relaxed">
+                    <p className="text-xl text-neutral-400 max-w-2xl mx-auto leading-relaxed">
                         Have a question? We're here to help you get the best out of SneakFit.
                     </p>
                 </div>
