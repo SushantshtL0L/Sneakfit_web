@@ -40,7 +40,7 @@ export default function LoginForm({ onSwitchToSignup }: LoginFormProps) {
       const loginResult = await handleLogin(data);
 
       if (loginResult.success) {
-       
+
         if (loginResult.data?.token) {
           localStorage.setItem("token", loginResult.data.token);
         }

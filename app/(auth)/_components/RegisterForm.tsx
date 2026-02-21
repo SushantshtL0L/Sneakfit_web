@@ -76,8 +76,8 @@ export default function RegisterForm({ onSwitchToLogin }: RegisterFormProps) {
           type="button"
           onClick={() => setRole("user")}
           className={`flex-1 rounded-xl py-3 text-sm font-semibold transition-all ${role === "user"
-              ? "bg-teal-400 text-white shadow-md"
-              : "bg-gray-100 text-gray-600 hover:bg-gray-200"
+            ? "bg-teal-400 text-white shadow-md"
+            : "bg-gray-100 text-gray-600 hover:bg-gray-200"
             }`}
         >
           Register as Buyer
@@ -86,8 +86,8 @@ export default function RegisterForm({ onSwitchToLogin }: RegisterFormProps) {
           type="button"
           onClick={() => setRole("seller")}
           className={`flex-1 rounded-xl py-3 text-sm font-semibold transition-all ${role === "seller"
-              ? "bg-teal-400 text-white shadow-md"
-              : "bg-gray-100 text-gray-600 hover:bg-gray-200"
+            ? "bg-teal-400 text-white shadow-md"
+            : "bg-gray-100 text-gray-600 hover:bg-gray-200"
             }`}
         >
           Register as Seller
