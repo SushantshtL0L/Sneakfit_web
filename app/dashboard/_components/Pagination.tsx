@@ -18,7 +18,7 @@ const Pagination: React.FC<PaginationProps> = ({ currentPage, totalPages, onPage
             <button
                 onClick={() => onPageChange(Math.max(1, currentPage - 1))}
                 disabled={currentPage === 1}
-                className="w-12 h-12 flex items-center justify-center border border-gray-100 bg-white text-gray-400 hover:border-gray-300 disabled:opacity-30 disabled:cursor-not-allowed transition-all rounded-lg"
+                className="w-12 h-12 flex items-center justify-center border border-[var(--border-color)] bg-[var(--card-bg)] text-neutral-400 hover:border-neutral-400 disabled:opacity-30 disabled:cursor-not-allowed transition-all rounded-lg"
             >
                 <FiChevronLeft size={20} />
             </button>
@@ -29,8 +29,8 @@ const Pagination: React.FC<PaginationProps> = ({ currentPage, totalPages, onPage
                     key={page}
                     onClick={() => onPageChange(page)}
                     className={`w-12 h-12 flex items-center justify-center text-[16px] font-bold transition-all rounded-lg border ${currentPage === page
-                            ? "bg-[#EAB308] border-[#EAB308] text-white shadow-lg"
-                            : "bg-white border-gray-100 text-gray-400 hover:border-gray-300"
+                        ? "bg-[var(--foreground)] border-[var(--foreground)] text-[var(--background)] shadow-lg"
+                        : "bg-[var(--card-bg)] border-[var(--border-color)] text-neutral-400 hover:border-neutral-400"
                         }`}
                 >
                     {page}
@@ -41,7 +41,7 @@ const Pagination: React.FC<PaginationProps> = ({ currentPage, totalPages, onPage
             <button
                 onClick={() => onPageChange(Math.min(totalPages, currentPage + 1))}
                 disabled={currentPage === totalPages}
-                className="w-12 h-12 flex items-center justify-center border border-gray-100 bg-white text-gray-400 hover:border-gray-300 disabled:opacity-30 disabled:cursor-not-allowed transition-all rounded-lg"
+                className="w-12 h-12 flex items-center justify-center border border-[var(--border-color)] bg-[var(--card-bg)] text-neutral-400 hover:border-neutral-400 disabled:opacity-30 disabled:cursor-not-allowed transition-all rounded-lg"
             >
                 <FiChevronRight size={20} />
             </button>

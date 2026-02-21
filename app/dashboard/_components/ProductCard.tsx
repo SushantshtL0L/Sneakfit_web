@@ -8,12 +8,13 @@ import { toast } from "react-toastify";
 import Link from "next/link";
 import { useAuth } from "@/context/AuthContext";
 import { useRouter } from "next/navigation";
+import { useTheme } from "@/context/ThemeContext";
 
 const ProductCard = ({ product, currentUserId, onDeleted }: { product: any, currentUserId?: string, onDeleted?: (id: string) => void }) => {
     const { user } = useAuth();
     const router = useRouter();
+    const { theme } = useTheme();
 
-    // Logic to handle image URLs (local uploads vs external links)
     const imageUrl = product.image.startsWith("http")
         ? product.image
         : `http://localhost:5050${product.image}`;
@@ -31,7 +32,6 @@ const ProductCard = ({ product, currentUserId, onDeleted }: { product: any, curr
 
     const onDelete = async () => {
         if (!window.confirm("Are you sure you want to delete this listing?")) return;
-
         try {
             const result = await handleDeleteProduct(product._id || product.id);
             if (result.success) {
@@ -53,7 +53,7 @@ const ProductCard = ({ product, currentUserId, onDeleted }: { product: any, curr
             onClick={navigateToDetail}
         >
             <div className="block">
-                <div className="relative aspect-[4/5] bg-white rounded-[40px] overflow-hidden shadow-[0_8px_30px_rgb(0,0,0,0.04)] group-hover:shadow-[0_20px_40px_rgb(0,0,0,0.08)] transition-all duration-500 border border-neutral-100">
+                <div className={`relative aspect-[4/5] rounded-[40px] overflow-hidden shadow-[0_8px_30px_rgb(0,0,0,0.04)] group-hover:shadow-[0_20px_40px_rgb(0,0,0,0.08)] transition-all duration-500 border ${theme === 'dark' ? 'bg-neutral-900 border-neutral-800' : 'bg-white border-neutral-100'}`}>
                     <img
                         src={imageUrl}
                         alt={product.name}
@@ -64,7 +64,7 @@ const ProductCard = ({ product, currentUserId, onDeleted }: { product: any, curr
                     <div className="absolute top-6 left-6">
                         <span className={`
                             px-4 py-1.5 rounded-full text-[10px] font-black uppercase tracking-widest
-                            ${product.condition === 'new' ? 'bg-black text-white' : 'bg-orange-500 text-white'}
+                            ${product.condition === 'new' ? theme === 'dark' ? 'bg-white text-black' : 'bg-black text-white' : 'bg-orange-500 text-white'}
                         `}>
                             {product.condition || 'Pre-owned'}
                         </span>
@@ -74,7 +74,7 @@ const ProductCard = ({ product, currentUserId, onDeleted }: { product: any, curr
                     <div className="absolute top-6 right-6 flex flex-col gap-3 z-10">
                         <button
                             onClick={(e) => e.stopPropagation()}
-                            className="w-10 h-10 bg-white/80 backdrop-blur-md rounded-xl flex items-center justify-center text-neutral-400 hover:text-red-500 transition-colors shadow-sm"
+                            className={`w-10 h-10 backdrop-blur-md rounded-xl flex items-center justify-center text-neutral-400 hover:text-red-500 transition-colors shadow-sm ${theme === 'dark' ? 'bg-neutral-800/80' : 'bg-white/80'}`}
                         >
                             <FiHeart className="text-xl" />
                         </button>
@@ -105,7 +105,7 @@ const ProductCard = ({ product, currentUserId, onDeleted }: { product: any, curr
                     {/* Featured Label */}
                     {(product.isNew || product.rating > 4.5) && (
                         <div className="absolute bottom-6 left-6">
-                            <div className="flex items-center gap-1 bg-white/80 backdrop-blur-md px-3 py-1 rounded-lg text-neutral-900 shadow-sm border border-neutral-100">
+                            <div className={`flex items-center gap-1 backdrop-blur-md px-3 py-1 rounded-lg shadow-sm border ${theme === 'dark' ? 'bg-neutral-800/80 text-white border-neutral-700' : 'bg-white/80 text-neutral-900 border-neutral-100'}`}>
                                 <FiStar className="text-orange-400 fill-orange-400" />
                                 <span className="text-[10px] font-bold">TOP RATED</span>
                             </div>
@@ -119,27 +119,24 @@ const ProductCard = ({ product, currentUserId, onDeleted }: { product: any, curr
                             <span className="text-[10px] font-black uppercase tracking-[0.2em] text-neutral-400 mb-1">
                                 {product.brand || "Limited Edition"}
                             </span>
-                            <h3 className="text-lg font-bold text-neutral-800 leading-tight group-hover:text-black transition-colors line-clamp-1">
+                            <h3 className={`text-lg font-bold leading-tight transition-colors line-clamp-1 ${theme === 'dark' ? 'text-white' : 'text-neutral-800 group-hover:text-black'}`}>
                                 {product.name}
                             </h3>
                         </div>
                     </div>
 
-                    <div className="flex items-center justify-between mt-4 bg-neutral-50 p-4 rounded-3xl border border-neutral-100 group-hover:bg-black group-hover:border-black transition-all duration-500">
+                    <div className={`flex items-center justify-between mt-4 p-4 rounded-3xl border transition-all duration-500 ${theme === 'dark' ? 'bg-neutral-900 border-neutral-800 group-hover:bg-white group-hover:border-white' : 'bg-neutral-50 border-neutral-100 group-hover:bg-black group-hover:border-black'}`}>
                         <div className="flex flex-col">
-                            <span className="text-[10px] font-bold text-neutral-400 group-hover:text-neutral-500">PRICE</span>
-                            <span className="text-xl font-black text-neutral-900 group-hover:text-white font-sans">
+                            <span className={`text-[10px] font-bold group-hover:text-neutral-500 ${theme === 'dark' ? 'text-neutral-500' : 'text-neutral-400'}`}>PRICE</span>
+                            <span className={`text-xl font-black font-sans transition-colors ${theme === 'dark' ? 'text-white group-hover:text-black' : 'text-neutral-900 group-hover:text-white'}`}>
                                 Rs. {(() => {
-                                    const rawPrice = product.price || product.Price;
-                                    if (!rawPrice) return "??";
-                                    const numericPrice = typeof rawPrice === 'string'
-                                        ? parseFloat(rawPrice.replace(/[^0-9.]/g, ''))
-                                        : rawPrice;
-                                    return isNaN(numericPrice) ? "???" : numericPrice.toLocaleString();
+                                    const rawPrice = product.price || product.Value;
+                                    const priceToFormat = typeof rawPrice === 'string' ? parseFloat(rawPrice) : rawPrice;
+                                    return priceToFormat?.toLocaleString() || "0";
                                 })()}
                             </span>
                         </div>
-                        <div className="w-10 h-10 bg-white rounded-xl flex items-center justify-center text-black shadow-sm transform group-hover:rotate-90 transition-transform duration-500">
+                        <div className={`w-10 h-10 rounded-xl flex items-center justify-center shadow-sm transform group-hover:rotate-90 transition-transform duration-500 ${theme === 'dark' ? 'bg-neutral-800 text-white group-hover:bg-black group-hover:text-white' : 'bg-white text-black'}`}>
                             <FiArrowRight className="text-xl" />
                         </div>
                     </div>
@@ -148,6 +145,5 @@ const ProductCard = ({ product, currentUserId, onDeleted }: { product: any, curr
         </motion.div>
     );
 };
-
 
 export default ProductCard;
