@@ -9,6 +9,7 @@ import FeaturedOffers from "./_components/FeaturedOffers";
 import SettingsDropdown from "./_components/SettingsDropdown";
 import { handleGetAllProducts } from "@/lib/actions/product.actions";
 import { useAuth } from "@/context/AuthContext";
+import { useTheme } from "@/context/ThemeContext";
 import { FiFilter, FiChevronDown } from "react-icons/fi";
 import { motion } from "framer-motion";
 import { useSearchParams } from "next/navigation";
@@ -16,6 +17,7 @@ import { useSearchParams } from "next/navigation";
 export default function DashboardPage() {
   const searchParams = useSearchParams();
   const search = searchParams.get("search") || "";
+  const { theme } = useTheme();
 
   const [liveProducts, setLiveProducts] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
@@ -36,7 +38,6 @@ export default function DashboardPage() {
         setTotalPages(result.data.totalPages);
         setTotalProducts(result.data.total);
       } else {
-        // Fallback backend ko lagi
         setLiveProducts(result.data);
         setTotalPages(1);
         setTotalProducts(result.data.length);
@@ -51,18 +52,18 @@ export default function DashboardPage() {
   }, [page, search]);
 
   const handleProductDeleted = (id: string) => {
-    fetchProducts(); // Refresh current page
+    fetchProducts();
   };
 
   return (
-    <div className="flex min-h-screen bg-[#f8f9fa] text-neutral-900 font-sans">
+    <div className={`flex min-h-screen font-sans transition-colors duration-300 ${theme === 'dark' ? 'bg-[#0a0a0a] text-white' : 'bg-[#f8f9fa] text-neutral-900'}`}>
       <Sidebar activePage="shoes" />
 
       {/* Main Content */}
-      <main className="flex-1 p-10 lg:p-16 bg-white overflow-hidden">
+      <main className={`flex-1 p-10 lg:p-16 overflow-hidden transition-colors duration-300 ${theme === 'dark' ? 'bg-[#0a0a0a]' : 'bg-white'}`}>
         <header className="flex flex-col md:flex-row justify-between items-start md:items-center mb-12 px-4 gap-6">
           <div className="flex flex-col gap-2">
-            <h2 className="text-4xl font-black text-neutral-900 tracking-tighter uppercase">
+            <h2 className={`text-4xl font-black tracking-tighter uppercase transition-colors ${theme === 'dark' ? 'text-white' : 'text-neutral-900'}`}>
               New Drops<span className="text-neutral-300">.</span>
             </h2>
             <div className="flex items-center gap-3">
@@ -70,18 +71,18 @@ export default function DashboardPage() {
                 Showing {liveProducts.length} of {totalProducts} items
               </span>
               <div className="h-1 w-1 rounded-full bg-neutral-300"></div>
-              <span className="text-xs font-bold text-neutral-900 uppercase tracking-widest bg-neutral-100 px-3 py-1 rounded-full">
+              <span className={`text-xs font-bold uppercase tracking-widest px-3 py-1 rounded-full transition-colors ${theme === 'dark' ? 'bg-neutral-800 text-neutral-300' : 'bg-neutral-100 text-neutral-900'}`}>
                 Spring '24 Collection
               </span>
             </div>
           </div>
 
           <div className="flex items-center gap-4">
-            <button className="flex items-center gap-2 px-6 py-3 rounded-2xl bg-neutral-50 border border-neutral-100 text-sm font-bold text-neutral-600 hover:bg-neutral-100 transition-colors">
+            <button className={`flex items-center gap-2 px-6 py-3 rounded-2xl border transition-all ${theme === 'dark' ? 'bg-neutral-900 border-neutral-800 text-white hover:bg-neutral-800' : 'bg-neutral-50 border-neutral-100 text-neutral-600 hover:bg-neutral-100'}`}>
               <FiFilter />
               Filter
             </button>
-            <button className="flex items-center gap-2 px-6 py-3 rounded-2xl bg-neutral-900 text-white text-sm font-bold hover:bg-neutral-800 transition-colors shadow-xl shadow-neutral-200">
+            <button className={`flex items-center gap-2 px-6 py-3 rounded-2xl text-sm font-bold transition-all shadow-xl ${theme === 'dark' ? 'bg-white text-black hover:bg-neutral-200' : 'bg-neutral-900 text-white hover:bg-neutral-800 shadow-neutral-200'}`}>
               Sort By
               <FiChevronDown />
             </button>
@@ -99,15 +100,15 @@ export default function DashboardPage() {
             <motion.div
               animate={{ rotate: 360 }}
               transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
-              className="w-12 h-12 border-4 border-neutral-100 border-t-neutral-900 rounded-full"
+              className={`w-12 h-12 border-4 rounded-full ${theme === 'dark' ? 'border-neutral-800 border-t-white' : 'border-neutral-100 border-t-neutral-900'}`}
             />
             <p className="text-neutral-400 font-bold uppercase tracking-widest text-xs">Summoning Kicks...</p>
           </div>
         ) : (
           <div className="px-4">
             <div className="flex items-center justify-between mb-10">
-              <h3 className="text-xl font-bold text-neutral-900 tracking-tight">Marketplace</h3>
-              <button className="text-xs font-black uppercase tracking-widest text-neutral-400 hover:text-neutral-900 transition-colors">
+              <h3 className={`text-xl font-bold tracking-tight transition-colors ${theme === 'dark' ? 'text-white' : 'text-neutral-900'}`}>Marketplace</h3>
+              <button className="text-xs font-black uppercase tracking-widest text-neutral-400 hover:text-neutral-900 dark:hover:text-white transition-colors">
                 View Trends
               </button>
             </div>
@@ -129,7 +130,7 @@ export default function DashboardPage() {
               onPageChange={(p) => setPage(p)}
             />
 
-            <div className="mt-20 border-t border-neutral-50 pt-20">
+            <div className={`mt-20 border-t pt-20 transition-colors ${theme === 'dark' ? 'border-neutral-800' : 'border-neutral-50'}`}>
               <SupportSection />
             </div>
           </div>
@@ -138,4 +139,3 @@ export default function DashboardPage() {
     </div>
   );
 }
-
