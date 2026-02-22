@@ -11,8 +11,9 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { handleDeleteProduct } from "@/lib/actions/product.actions";
 import { useTheme } from "@/context/ThemeContext";
-import { handleCreateReview, handleGetProductReviews } from "@/lib/actions/review.actions";
-import { FiShoppingBag, FiUser, FiPlus, FiMinus, FiCheck, FiStar, FiEdit, FiTrash2, FiMessageCircle, FiSend } from "react-icons/fi";
+import { handleCreateReview, handleGetProductReviews, handleDeleteReview } from "@/lib/actions/review.actions";
+import { useWishlist } from "@/context/WishlistContext";
+import { FiShoppingBag, FiUser, FiPlus, FiMinus, FiCheck, FiStar, FiEdit, FiTrash2, FiMessageCircle, FiSend, FiHeart } from "react-icons/fi";
 
 export default function ProductDetailPage({ params }: { params: Promise<{ id: string }> }) {
     const { id } = use(params);
@@ -27,6 +28,7 @@ export default function ProductDetailPage({ params }: { params: Promise<{ id: st
     const { user } = useAuth();
     const router = useRouter();
     const { theme } = useTheme();
+    const { addToWishlist, removeFromWishlist, isInWishlist } = useWishlist();
 
 
     const isAdmin = user?.role === "admin";
@@ -131,6 +133,20 @@ export default function ProductDetailPage({ params }: { params: Promise<{ id: st
         setIsSubmitting(false);
     };
 
+    const handleReviewDelete = async (reviewId: string) => {
+        if (!window.confirm("Are you sure you want to delete this review?")) return;
+
+        const result = await handleDeleteReview(reviewId);
+        if (result.success) {
+            toast.success("Review deleted");
+            // Refresh reviews
+            const updated = await handleGetProductReviews(id);
+            if (updated.success) setReviews(updated.data);
+        } else {
+            toast.error(result.message);
+        }
+    };
+
     if (loading) {
         return (
             <div className={`flex min-h-screen items-center justify-center transition-colors ${theme === 'dark' ? 'bg-[#0a0a0a]' : 'bg-[#fcfcfc]'}`}>
@@ -164,6 +180,32 @@ export default function ProductDetailPage({ params }: { params: Promise<{ id: st
                         <div className="flex items-center gap-8">
                             <button onClick={handleAddToCart} className="bg-[#6db56f] text-white px-12 py-5 rounded-2xl flex items-center gap-4 text-xl font-bold shadow-xl hover:bg-[#5da061] transition-all transform active:scale-95">
                                 <FiShoppingBag /> Add To Cart
+                            </button>
+                            <button
+                                onClick={() => {
+                                    const itemId = product.id || product._id;
+                                    if (isInWishlist(itemId)) {
+                                        removeFromWishlist(itemId);
+                                        toast.info("Removed from wishlist");
+                                    } else {
+                                        addToWishlist({
+                                            id: itemId,
+                                            name: product.name,
+                                            price: Number(product.price),
+                                            image: product.image,
+                                            brand: product.brand || "SneakFit",
+                                            condition: product.condition,
+                                        });
+                                        toast.success("Added to wishlist!");
+                                    }
+                                }}
+                                className={`p-5 rounded-2xl flex items-center justify-center transition-all transform active:scale-95 ${isInWishlist(product.id || product._id)
+                                        ? "bg-red-500 text-white shadow-xl shadow-red-500/30"
+                                        : theme === "dark" ? "bg-neutral-900 text-neutral-400 hover:text-red-500 border border-neutral-800" : "bg-white text-neutral-400 hover:text-red-500 border border-neutral-100 shadow-sm"
+                                    }`}
+                                title={isInWishlist(product.id || product._id) ? "Remove from wishlist" : "Add to wishlist"}
+                            >
+                                <FiHeart size={24} className={isInWishlist(product.id || product._id) ? "fill-white" : ""} />
                             </button>
                             {canManage && (
                                 <div className="flex gap-4">
@@ -270,10 +312,21 @@ export default function ProductDetailPage({ params }: { params: Promise<{ id: st
                                                         <p className="text-xs text-neutral-500 font-bold uppercase tracking-widest">{new Date(rev.createdAt).toLocaleDateString()}</p>
                                                     </div>
                                                 </div>
-                                                <div className="flex gap-1">
-                                                    {[...Array(5)].map((_, i) => (
-                                                        <FiStar key={i} className={`text-sm ${i < rev.rating ? 'text-yellow-400 fill-yellow-400' : 'text-neutral-300'}`} />
-                                                    ))}
+                                                <div className="flex flex-col items-end gap-2">
+                                                    <div className="flex gap-1">
+                                                        {[...Array(5)].map((_, i) => (
+                                                            <FiStar key={i} className={`text-sm ${i < rev.rating ? 'text-yellow-400 fill-yellow-400' : 'text-neutral-300'}`} />
+                                                        ))}
+                                                    </div>
+                                                    {(user?.role === "admin" || (rev.user && (rev.user._id === user?.id || rev.user === user?.id))) && (
+                                                        <button
+                                                            onClick={() => handleReviewDelete(rev._id)}
+                                                            className="text-red-500 hover:text-red-700 transition-colors p-1"
+                                                            title="Delete Review"
+                                                        >
+                                                            <FiTrash2 size={16} />
+                                                        </button>
+                                                    )}
                                                 </div>
                                             </div>
                                             <p className={`text-xl leading-relaxed ${theme === 'dark' ? 'text-neutral-300' : 'text-neutral-600'}`}>{rev.comment}</p>
