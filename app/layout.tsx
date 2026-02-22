@@ -3,6 +3,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { AuthProvider } from "../context/AuthContext";
 import { CartProvider } from "../context/CartContext";
+import { WishlistProvider } from "../context/WishlistContext";
 import { ThemeProvider } from "../context/ThemeContext";
 import { ToastContainer } from "react-toastify";
 
@@ -30,8 +31,10 @@ export default function RootLayout({
         <ThemeProvider>
           <AuthProvider>
             <CartProvider>
-              {children}
-              <ToastContainer position="top-right" autoClose={3000} />
+              <WishlistProvider>
+                {children}
+                <ToastContainer position="top-right" autoClose={3000} />
+              </WishlistProvider>
             </CartProvider>
           </AuthProvider>
         </ThemeProvider>
