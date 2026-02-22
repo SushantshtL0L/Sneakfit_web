@@ -1,10 +1,11 @@
 "use client";
 
 import React from "react";
-import { FiSearch, FiShoppingCart, FiTrendingUp, FiTag, FiUser, FiPlusSquare, FiShoppingBag, FiArrowRight, FiBox, FiSun, FiMoon } from "react-icons/fi";
+import { FiSearch, FiShoppingCart, FiTrendingUp, FiTag, FiUser, FiPlusSquare, FiShoppingBag, FiArrowRight, FiBox, FiSun, FiMoon, FiHeart } from "react-icons/fi";
 import Link from "next/link";
 import { useAuth } from "@/context/AuthContext";
 import { useTheme } from "@/context/ThemeContext";
+import { useWishlist } from "@/context/WishlistContext";
 import { motion, AnimatePresence } from "framer-motion";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 
@@ -65,9 +66,10 @@ const SidebarItem = ({
     </Link>
 );
 
-export default function Sidebar({ activePage }: { activePage: "shoes" | "thrifts" | "sell" | "profile" | "support" | "sales" | "cart" | "orders" }) {
+export default function Sidebar({ activePage }: { activePage: "shoes" | "thrifts" | "sell" | "profile" | "support" | "sales" | "cart" | "orders" | "wishlist" }) {
     const { user } = useAuth();
     const { theme, toggleTheme } = useTheme();
+    const { wishlistItems } = useWishlist();
     const router = useRouter();
     const searchParams = useSearchParams();
 
@@ -148,6 +150,7 @@ export default function Sidebar({ activePage }: { activePage: "shoes" | "thrifts
                         Account
                     </div>
                     <SidebarItem label="My Cart" active={activePage === "cart"} href="/dashboard/cart" icon={FiShoppingCart} theme={theme} />
+                    <SidebarItem label="My Wishlist" active={activePage === "wishlist"} href="/dashboard/wishlist" icon={FiHeart} badge={wishlistItems.length > 0 ? String(wishlistItems.length) : undefined} theme={theme} />
                     <SidebarItem label="My Orders" active={activePage === "orders"} href="/dashboard/orders" icon={FiBox} theme={theme} />
                     {isSeller && (
                         <SidebarItem label="Sell Item" active={activePage === "sell"} href="/dashboard/sell" icon={FiPlusSquare} theme={theme} />
