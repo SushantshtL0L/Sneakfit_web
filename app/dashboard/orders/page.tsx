@@ -148,7 +148,23 @@ export default function OrdersPage() {
                                                                     <span className="text-neutral-500 font-bold flex items-center gap-2"><FiCreditCard /> Payment Method</span>
                                                                     <span className={`font-black uppercase tracking-widest text-xs ${theme === 'dark' ? 'text-white' : 'text-neutral-900'}`}>{order.paymentMethod}</span>
                                                                 </div>
-                                                                <div className="flex justify-between items-center text-xl">
+                                                                <div className="flex justify-between items-start pb-4 border-b border-dashed border-neutral-200 dark:border-neutral-700">
+                                                                    <span className="text-neutral-500 font-bold flex items-center gap-2 mt-1">Shipping Address</span>
+                                                                    <span className={`text-xs font-bold text-right max-w-[200px] ${theme === 'dark' ? 'text-neutral-300' : 'text-neutral-600'}`}>
+                                                                        {order.shippingAddress ? (
+                                                                            typeof order.shippingAddress === 'string' ? (
+                                                                                order.shippingAddress
+                                                                            ) : (
+                                                                                <>
+                                                                                    {order.shippingAddress.fullName}<br />
+                                                                                    {order.shippingAddress.address}, {order.shippingAddress.city}<br />
+                                                                                    {order.shippingAddress.phone}
+                                                                                </>
+                                                                            )
+                                                                        ) : "Not specified"}
+                                                                    </span>
+                                                                </div>
+                                                                <div className="flex justify-between items-center text-xl pt-2">
                                                                     <span className={`font-bold ${theme === 'dark' ? 'text-white' : 'text-neutral-900'}`}>Total Amount</span>
                                                                     <span className="text-teal-500 font-black">Rs {order.totalAmount.toLocaleString()}</span>
                                                                 </div>
