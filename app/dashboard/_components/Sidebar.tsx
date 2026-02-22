@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import { FiSearch, FiShoppingCart, FiTrendingUp, FiTag, FiUser, FiPlusSquare, FiShoppingBag, FiArrowRight, FiBox, FiSun, FiMoon, FiHeart } from "react-icons/fi";
+import { FiSearch, FiShoppingCart, FiTrendingUp, FiTag, FiUser, FiPlusSquare, FiShoppingBag, FiArrowRight, FiBox, FiSun, FiMoon, FiHeart, FiClipboard } from "react-icons/fi";
 import Link from "next/link";
 import { useAuth } from "@/context/AuthContext";
 import { useTheme } from "@/context/ThemeContext";
@@ -66,7 +66,7 @@ const SidebarItem = ({
     </Link>
 );
 
-export default function Sidebar({ activePage }: { activePage: "shoes" | "thrifts" | "sell" | "profile" | "support" | "sales" | "cart" | "orders" | "wishlist" }) {
+export default function Sidebar({ activePage }: { activePage: "shoes" | "thrifts" | "sell" | "profile" | "support" | "sales" | "cart" | "orders" | "wishlist" | "manage-orders" }) {
     const { user } = useAuth();
     const { theme, toggleTheme } = useTheme();
     const { wishlistItems } = useWishlist();
@@ -154,6 +154,9 @@ export default function Sidebar({ activePage }: { activePage: "shoes" | "thrifts
                     <SidebarItem label="My Orders" active={activePage === "orders"} href="/dashboard/orders" icon={FiBox} theme={theme} />
                     {isSeller && (
                         <SidebarItem label="Sell Item" active={activePage === "sell"} href="/dashboard/sell" icon={FiPlusSquare} theme={theme} />
+                    )}
+                    {isSeller && (
+                        <SidebarItem label="Manage Orders" active={activePage === "manage-orders"} href="/dashboard/orders/manage" icon={FiClipboard} theme={theme} />
                     )}
                     <SidebarItem label="Profile" active={activePage === "profile"} href="/profile" icon={FiUser} theme={theme} />
                 </nav>

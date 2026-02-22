@@ -49,6 +49,8 @@ const ProductCard = ({ product, currentUserId, onDeleted }: { product: any, curr
                 image: product.image,
                 brand: product.brand || "SneakFit",
                 condition: product.condition,
+                description: product.description || "",
+                size: product.size
             });
             toast.success("Added to wishlist!");
         }
@@ -144,9 +146,16 @@ const ProductCard = ({ product, currentUserId, onDeleted }: { product: any, curr
                 <div className="mt-6 px-2">
                     <div className="flex justify-between items-start mb-2">
                         <div className="flex flex-col">
-                            <span className="text-[10px] font-black uppercase tracking-[0.2em] text-neutral-400 mb-1">
-                                {product.brand || "Limited Edition"}
-                            </span>
+                            <div className="flex justify-between items-center mb-1">
+                                <span className="text-[10px] font-black uppercase tracking-[0.2em] text-neutral-400">
+                                    {product.brand || "Limited Edition"}
+                                </span>
+                                {product.size && (
+                                    <span className={`text-[10px] font-bold px-2 py-0.5 rounded-md border ${theme === 'dark' ? 'bg-neutral-800 border-neutral-700 text-neutral-300' : 'bg-neutral-100 border-neutral-200 text-neutral-500'}`}>
+                                        EU {product.size}
+                                    </span>
+                                )}
+                            </div>
                             <h3 className={`text-lg font-bold leading-tight transition-colors line-clamp-1 ${theme === 'dark' ? 'text-white' : 'text-neutral-800 group-hover:text-black'}`}>
                                 {product.name}
                             </h3>
