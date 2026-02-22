@@ -47,7 +47,8 @@ export default function ProductDetailPage({ params }: { params: Promise<{ id: st
             sold: "4500",
             image: "https://images.unsplash.com/photo-1542291026-7eec264c27ff?auto=format&fit=crop&q=80&w=400",
             isNew: true,
-            condition: "new"
+            condition: "new",
+            description: "A classic Puma sneaker featuring a clean white and black colorblocked design. Perfect for both street style and casual gym sessions. Premium materials ensure all-day comfort and durability."
         }
     ];
 
@@ -175,7 +176,52 @@ export default function ProductDetailPage({ params }: { params: Promise<{ id: st
 
                     <div className="w-1/2 z-10 flex flex-col justify-center py-20">
                         <motion.h1 initial={{ opacity: 0, x: -50 }} animate={{ opacity: 1, x: 0 }} className={`text-8xl font-bold leading-[1.1] mb-6 ${theme === 'dark' ? 'text-white' : 'text-gray-900'}`}>{product.name}</motion.h1>
-                        <p className={`text-7xl font-bold tracking-tight mb-12 ${theme === 'dark' ? 'text-white' : 'text-gray-900'}`}>Rs {Number(product.price).toLocaleString()}</p>
+                        <p className={`text-7xl font-bold tracking-tight mb-8 ${theme === 'dark' ? 'text-white' : 'text-gray-900'}`}>Rs {Number(product.price).toLocaleString()}</p>
+
+                        <motion.div
+                            initial={{ opacity: 0, y: 20 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ delay: 0.2 }}
+                            className={`text-xl mb-10 max-w-xl leading-relaxed font-medium ${theme === 'dark' ? 'text-neutral-400' : 'text-neutral-600'}`}
+                        >
+                            {product.description || "No description available for this masterpiece."}
+                        </motion.div>
+
+                        {/* Size Selection */}
+                        <motion.div
+                            initial={{ opacity: 0, y: 20 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ delay: 0.3 }}
+                            className="mb-12"
+                        >
+                            <div className="flex justify-between items-center mb-6 max-w-xl">
+                                <h3 className={`text-xs font-black uppercase tracking-[0.2em] ${theme === 'dark' ? 'text-neutral-500' : 'text-neutral-400'}`}>
+                                    {product.condition === 'thrift' ? 'Available Size' : 'Select Size'}
+                                </h3>
+                                <span className="text-[10px] font-bold text-teal-500 uppercase tracking-widest cursor-pointer hover:underline">Size Guide</span>
+                            </div>
+
+                            {product.condition === 'thrift' ? (
+                                <div className={`w-20 h-20 rounded-2xl flex items-center justify-center text-2xl font-black border-2 transition-all ${theme === 'dark' ? 'bg-white text-black border-white' : 'bg-black text-white border-black'}`}>
+                                    {product.size || "42"}
+                                </div>
+                            ) : (
+                                <div className="flex flex-wrap gap-4">
+                                    {["38", "39", "40", "41", "42", "43", "44", "45"].map((size) => (
+                                        <button
+                                            key={size}
+                                            onClick={() => setSelectedSize(size)}
+                                            className={`w-16 h-16 rounded-2xl flex items-center justify-center text-lg font-bold border-2 transition-all transform active:scale-95 ${selectedSize === size
+                                                ? (theme === 'dark' ? 'bg-white text-black border-white shadow-xl' : 'bg-black text-white border-black shadow-xl')
+                                                : (theme === 'dark' ? 'bg-neutral-900 text-neutral-400 border-neutral-800 hover:border-neutral-700' : 'bg-white text-neutral-500 border-neutral-100 hover:border-neutral-900')
+                                                }`}
+                                        >
+                                            {size}
+                                        </button>
+                                    ))}
+                                </div>
+                            )}
+                        </motion.div>
 
                         <div className="flex items-center gap-8">
                             <button onClick={handleAddToCart} className="bg-[#6db56f] text-white px-12 py-5 rounded-2xl flex items-center gap-4 text-xl font-bold shadow-xl hover:bg-[#5da061] transition-all transform active:scale-95">
@@ -195,13 +241,15 @@ export default function ProductDetailPage({ params }: { params: Promise<{ id: st
                                             image: product.image,
                                             brand: product.brand || "SneakFit",
                                             condition: product.condition,
+                                            description: product.description || "",
+                                            size: product.size
                                         });
                                         toast.success("Added to wishlist!");
                                     }
                                 }}
                                 className={`p-5 rounded-2xl flex items-center justify-center transition-all transform active:scale-95 ${isInWishlist(product.id || product._id)
-                                        ? "bg-red-500 text-white shadow-xl shadow-red-500/30"
-                                        : theme === "dark" ? "bg-neutral-900 text-neutral-400 hover:text-red-500 border border-neutral-800" : "bg-white text-neutral-400 hover:text-red-500 border border-neutral-100 shadow-sm"
+                                    ? "bg-red-500 text-white shadow-xl shadow-red-500/30"
+                                    : theme === "dark" ? "bg-neutral-900 text-neutral-400 hover:text-red-500 border border-neutral-800" : "bg-white text-neutral-400 hover:text-red-500 border border-neutral-100 shadow-sm"
                                     }`}
                                 title={isInWishlist(product.id || product._id) ? "Remove from wishlist" : "Add to wishlist"}
                             >
