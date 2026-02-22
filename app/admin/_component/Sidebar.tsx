@@ -3,12 +3,13 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { motion } from "framer-motion";
-import { FiGrid, FiUsers, FiShoppingBag, FiLogOut, FiArrowRight } from "react-icons/fi";
+import { FiGrid, FiUsers, FiShoppingBag, FiLogOut, FiArrowRight, FiPackage } from "react-icons/fi";
 
 const ADMIN_LINKS = [
     { href: "/admin", label: "Dashboard", icon: FiGrid },
     { href: "/admin/users", label: "Users", icon: FiUsers },
     { href: "/admin/products", label: "Products", icon: FiShoppingBag },
+    { href: "/admin/orders", label: "Orders", icon: FiPackage },
 ];
 
 const SidebarItem = ({
