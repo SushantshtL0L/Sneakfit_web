@@ -23,9 +23,9 @@ export default function WishlistPage() {
             image: item.image,
             brand: item.brand,
             quantity: 1,
-            size: "42",
+            size: item.size || "42",
             color: "White",
-            description: "",
+            description: item.description || "",
             condition: item.condition || "new",
         });
         toast.success(`${item.name} added to cart!`);
@@ -127,9 +127,16 @@ export default function WishlistPage() {
                                                     <span className={`text-[10px] font-black uppercase tracking-[0.2em] ${theme === "dark" ? "text-neutral-500" : "text-neutral-400"}`}>
                                                         {item.brand || "SneakFit"}
                                                     </span>
-                                                    <h3 className={`text-lg font-bold leading-tight line-clamp-1 mt-1 ${theme === "dark" ? "text-white" : "text-neutral-900"}`}>
-                                                        {item.name}
-                                                    </h3>
+                                                    <div className="flex justify-between items-center mt-1">
+                                                        <h3 className={`text-lg font-bold leading-tight line-clamp-1 ${theme === "dark" ? "text-white" : "text-neutral-900"}`}>
+                                                            {item.name}
+                                                        </h3>
+                                                        {item.size && (
+                                                            <span className={`text-[10px] font-bold px-2 py-0.5 rounded-md border ${theme === 'dark' ? 'bg-neutral-800 border-neutral-700 text-neutral-300' : 'bg-neutral-100 border-neutral-200 text-neutral-500'}`}>
+                                                                EU {item.size}
+                                                            </span>
+                                                        )}
+                                                    </div>
                                                 </div>
 
                                                 <div className="flex items-center justify-between">

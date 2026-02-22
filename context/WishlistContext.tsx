@@ -10,6 +10,8 @@ export interface WishlistItem {
     image: string;
     brand: string;
     condition?: string;
+    description?: string;
+    size?: string;
 }
 
 interface WishlistContextType {
