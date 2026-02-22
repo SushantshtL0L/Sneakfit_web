@@ -114,7 +114,7 @@ export default function AdminUsersPage() {
                                         <div className="flex items-center gap-4">
                                             <div className="w-12 h-12 rounded-2xl bg-white/10 flex items-center justify-center text-gray-400 border border-white/5 overflow-hidden">
                                                 {user.image ? (
-                                                    <img src={user.image.startsWith('http') ? user.image : `http://localhost:5000${user.image}`} alt="" className="w-full h-full object-cover" />
+                                                    <img src={user.image.startsWith('http') ? user.image : `http://localhost:5050${user.image}`} alt="" className="w-full h-full object-cover" />
                                                 ) : (
                                                     <FiUser className="text-xl" />
                                                 )}

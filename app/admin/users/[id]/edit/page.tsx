@@ -35,7 +35,7 @@ export default function EditUserPage() {
                     role: result.data.role || "user"
                 });
                 if (result.data.image) {
-                    setPreview(result.data.image.startsWith('http') ? result.data.image : `http://localhost:5000${result.data.image}`);
+                    setPreview(result.data.image.startsWith('http') ? result.data.image : `http://localhost:5050${result.data.image}`);
                 }
             } else {
                 toast.error(result.message || "Failed to fetch user");

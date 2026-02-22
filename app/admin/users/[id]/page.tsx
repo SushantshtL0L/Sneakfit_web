@@ -62,7 +62,7 @@ export default function ViewUserPage() {
                     <div className="flex flex-col md:flex-row items-end gap-6 mb-12">
                         <div className="w-40 h-40 rounded-[40px] bg-neutral-900 border-4 border-neutral-900 ring-1 ring-white/10 flex items-center justify-center text-gray-300 overflow-hidden shadow-2xl backdrop-blur-xl">
                             {user.image ? (
-                                <img src={user.image.startsWith('http') ? user.image : `http://localhost:5000${user.image}`} alt="" className="w-full h-full object-cover" />
+                                <img src={user.image.startsWith('http') ? user.image : `http://localhost:5050${user.image}`} alt="" className="w-full h-full object-cover" />
                             ) : (
                                 <FiUser className="text-6xl" />
                             )}
