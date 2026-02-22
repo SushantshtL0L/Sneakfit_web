@@ -9,11 +9,15 @@ import Link from "next/link";
 import { useAuth } from "@/context/AuthContext";
 import { useRouter } from "next/navigation";
 import { useTheme } from "@/context/ThemeContext";
+import { useWishlist } from "@/context/WishlistContext";
 
 const ProductCard = ({ product, currentUserId, onDeleted }: { product: any, currentUserId?: string, onDeleted?: (id: string) => void }) => {
     const { user } = useAuth();
     const router = useRouter();
     const { theme } = useTheme();
+    const { addToWishlist, removeFromWishlist, isInWishlist } = useWishlist();
+
+    const wishlisted = isInWishlist(product._id || product.id);
 
     const imageUrl = product.image.startsWith("http")
         ? product.image
@@ -28,6 +32,26 @@ const ProductCard = ({ product, currentUserId, onDeleted }: { product: any, curr
 
     const navigateToDetail = () => {
         router.push(`/dashboard/product/${product._id || product.id}`);
+    };
+
+    const handleWishlistToggle = (e: React.MouseEvent) => {
+        e.preventDefault();
+        e.stopPropagation();
+        const id = product._id || product.id;
+        if (wishlisted) {
+            removeFromWishlist(id);
+            toast.info("Removed from wishlist");
+        } else {
+            addToWishlist({
+                id,
+                name: product.name,
+                price: Number(product.price || product.Value || 0),
+                image: product.image,
+                brand: product.brand || "SneakFit",
+                condition: product.condition,
+            });
+            toast.success("Added to wishlist!");
+        }
     };
 
     const onDelete = async () => {
@@ -73,10 +97,14 @@ const ProductCard = ({ product, currentUserId, onDeleted }: { product: any, curr
                     {/* Actions */}
                     <div className="absolute top-6 right-6 flex flex-col gap-3 z-10">
                         <button
-                            onClick={(e) => e.stopPropagation()}
-                            className={`w-10 h-10 backdrop-blur-md rounded-xl flex items-center justify-center text-neutral-400 hover:text-red-500 transition-colors shadow-sm ${theme === 'dark' ? 'bg-neutral-800/80' : 'bg-white/80'}`}
+                            onClick={handleWishlistToggle}
+                            className={`w-10 h-10 backdrop-blur-md rounded-xl flex items-center justify-center transition-all shadow-sm ${wishlisted
+                                ? "bg-red-500 text-white shadow-red-500/30"
+                                : theme === "dark" ? "bg-neutral-800/80 text-neutral-400 hover:text-red-500" : "bg-white/80 text-neutral-400 hover:text-red-500"
+                                }`}
+                            title={wishlisted ? "Remove from wishlist" : "Add to wishlist"}
                         >
-                            <FiHeart className="text-xl" />
+                            <FiHeart className={`text-xl ${wishlisted ? "fill-white" : ""}`} />
                         </button>
 
                         {canManage && (
