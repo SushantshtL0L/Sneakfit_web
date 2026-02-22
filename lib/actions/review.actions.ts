@@ -28,3 +28,19 @@ export async function handleGetProductReviews(productId: string) {
     return { success: false, message: error.message };
   }
 }
+
+export async function handleDeleteReview(reviewId: string) {
+  try {
+    const token = await getAuthToken();
+    const response = await fetch(`${API_URL}/${reviewId}`, {
+      method: "DELETE",
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    return await response.json();
+  } catch (error: any) {
+    return { success: false, message: error.message };
+  }
+}
