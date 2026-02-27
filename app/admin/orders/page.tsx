@@ -29,18 +29,22 @@ const STATUS_COLORS: Record<string, string> = {
 
 export default function AdminOrdersPage() {
     const [orders, setOrders] = useState<any[]>([]);
-    const [filtered, setFiltered] = useState<any[]>([]);
     const [loading, setLoading] = useState(true);
     const [expandedOrder, setExpandedOrder] = useState<string | null>(null);
     const [updatingId, setUpdatingId] = useState<string | null>(null);
     const [statusFilter, setStatusFilter] = useState<string>("all");
+    const [page, setPage] = useState(1);
+    const [pagination, setPagination] = useState<any>(null);
+    const [stats, setStats] = useState<any>({});
+    const limit = 10;
 
     const fetchOrders = async () => {
         setLoading(true);
-        const result = await handleGetAllOrders();
+        const result = await handleGetAllOrders(page, limit, statusFilter);
         if (result.success) {
             setOrders(result.data);
-            setFiltered(result.data);
+            setPagination(result.pagination);
+            setStats(result.stats || {});
         } else {
             toast.error("Failed to load orders");
         }
@@ -49,15 +53,8 @@ export default function AdminOrdersPage() {
 
     useEffect(() => {
         fetchOrders();
-    }, []);
-
-    useEffect(() => {
-        if (statusFilter === "all") {
-            setFiltered(orders);
-        } else {
-            setFiltered(orders.filter((o) => o.status === statusFilter));
-        }
-    }, [statusFilter, orders]);
+        window.scrollTo({ top: 0, behavior: "smooth" });
+    }, [page, statusFilter]);
 
     const handleStatusChange = async (orderId: string, newStatus: string) => {
         setUpdatingId(orderId);
@@ -87,7 +84,7 @@ export default function AdminOrdersPage() {
         setUpdatingId(null);
     };
 
-    const summaryCount = (s: string) => orders.filter((o) => o.status === s).length;
+    const summaryCount = (s: string) => stats[s] || 0;
 
     return (
         <div className="space-y-10 animate-in fade-in duration-500">
@@ -102,7 +99,7 @@ export default function AdminOrdersPage() {
                     </p>
                 </div>
                 <button
-                    onClick={fetchOrders}
+                    onClick={() => { setPage(1); fetchOrders(); }}
                     className="flex items-center gap-2 px-5 py-3 rounded-2xl font-bold text-sm bg-neutral-800 text-white hover:bg-neutral-700 transition-all"
                 >
                     <FiRefreshCw className={loading ? "animate-spin" : ""} />
@@ -115,7 +112,10 @@ export default function AdminOrdersPage() {
                 {STATUS_OPTIONS.map((s) => (
                     <button
                         key={s}
-                        onClick={() => setStatusFilter(statusFilter === s ? "all" : s)}
+                        onClick={() => {
+                            setStatusFilter(statusFilter === s ? "all" : s);
+                            setPage(1);
+                        }}
                         className={`p-5 rounded-2xl border text-left transition-all hover:scale-105 ${statusFilter === s
                             ? STATUS_COLORS[s] + " border-current"
                             : "bg-neutral-900 border-white/5 text-white/60 hover:border-white/20"
@@ -133,15 +133,15 @@ export default function AdminOrdersPage() {
             <div className="flex items-center gap-3 flex-wrap">
                 <FiFilter className="text-neutral-500" />
                 <button
-                    onClick={() => setStatusFilter("all")}
+                    onClick={() => { setStatusFilter("all"); setPage(1); }}
                     className={`px-4 py-2 rounded-xl text-xs font-black uppercase tracking-widest transition-all ${statusFilter === "all" ? "bg-white text-black" : "bg-neutral-800 text-neutral-400 hover:bg-neutral-700"}`}
                 >
-                    All ({orders.length})
+                    All ({stats.all || 0})
                 </button>
                 {STATUS_OPTIONS.map((s) => (
                     <button
                         key={s}
-                        onClick={() => setStatusFilter(s)}
+                        onClick={() => { setStatusFilter(s); setPage(1); }}
                         className={`px-4 py-2 rounded-xl text-xs font-black uppercase tracking-widest transition-all border ${statusFilter === s ? STATUS_COLORS[s] + " border-current" : "border-transparent bg-neutral-800 text-neutral-400 hover:bg-neutral-700"}`}
                     >
                         {s}
@@ -155,7 +155,7 @@ export default function AdminOrdersPage() {
                     <div className="w-12 h-12 border-4 rounded-full animate-spin border-white/10 border-t-white" />
                     <p className="text-neutral-500">Loading orders...</p>
                 </div>
-            ) : filtered.length === 0 ? (
+            ) : orders.length === 0 ? (
                 <div className="flex flex-col items-center justify-center py-24 bg-neutral-900/60 rounded-[40px] border border-dashed border-neutral-800">
                     <FiPackage className="text-7xl text-neutral-600 mb-6" />
                     <h3 className="text-2xl font-bold text-white">No orders found</h3>
@@ -163,7 +163,7 @@ export default function AdminOrdersPage() {
                 </div>
             ) : (
                 <div className="space-y-4">
-                    {filtered.map((order) => (
+                    {orders.map((order) => (
                         <div
                             key={order._id}
                             className="rounded-[32px] border border-white/5 bg-neutral-900 overflow-hidden transition-all hover:border-white/10"
@@ -304,6 +304,31 @@ export default function AdminOrdersPage() {
                             </AnimatePresence>
                         </div>
                     ))}
+
+                    {/* Pagination Controls */}
+                    {pagination && pagination.pages > 1 && (
+                        <div className="pt-10 flex items-center justify-between border-t border-white/5">
+                            <p className="text-sm text-neutral-500 font-medium">
+                                Showing page <span className="text-white font-bold">{pagination.page}</span> of <span className="text-white font-bold">{pagination.pages}</span>
+                            </p>
+                            <div className="flex gap-3">
+                                <button
+                                    onClick={() => setPage(p => Math.max(1, p - 1))}
+                                    disabled={pagination.page === 1}
+                                    className="px-6 py-3 rounded-2xl text-sm font-bold bg-neutral-800 text-white border border-white/5 disabled:opacity-30 disabled:cursor-not-allowed hover:bg-neutral-700 transition-all flex items-center gap-2"
+                                >
+                                    Previous
+                                </button>
+                                <button
+                                    onClick={() => setPage(p => Math.min(pagination.pages, p + 1))}
+                                    disabled={pagination.page === pagination.pages}
+                                    className="px-6 py-3 rounded-2xl text-sm font-bold bg-white text-black hover:scale-105 transition-all disabled:opacity-30 disabled:cursor-not-allowed disabled:hover:scale-100 flex items-center gap-2"
+                                >
+                                    Next
+                                </button>
+                            </div>
+                        </div>
+                    )}
                 </div>
             )}
         </div>
