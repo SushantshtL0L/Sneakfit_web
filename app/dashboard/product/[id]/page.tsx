@@ -32,9 +32,12 @@ export default function ProductDetailPage({ params }: { params: Promise<{ id: st
 
 
     const isAdmin = user?.role === "admin";
-    const isOwner = user && product?.seller && (
-        (typeof product.seller === 'string' ? product.seller : product.seller._id?.toString() || product.seller.id?.toString()) === user.id
-    );
+    const currentId = user?.id || user?._id;
+    const sellerId = typeof product?.seller === 'string'
+        ? product.seller
+        : (product?.seller?._id || product?.seller?.id);
+
+    const isOwner = !!(currentId && sellerId && currentId.toString() === sellerId.toString());
     const canManage = isAdmin || isOwner;
 
     const dummyProducts = [
@@ -91,6 +94,10 @@ export default function ProductDetailPage({ params }: { params: Promise<{ id: st
     };
 
     const handleAddToCart = () => {
+        if (user?.role === "seller") {
+            toast.info("Sellers cannot add products to cart.");
+            return;
+        }
         const sizeToUse = product.condition === "thrift" ? (product.size || "42") : selectedSize;
         addToCart({
             id: product.id || product._id,
@@ -224,42 +231,63 @@ export default function ProductDetailPage({ params }: { params: Promise<{ id: st
                         </motion.div>
 
                         <div className="flex items-center gap-8">
-                            <button onClick={handleAddToCart} className="bg-[#6db56f] text-white px-12 py-5 rounded-2xl flex items-center gap-4 text-xl font-bold shadow-xl hover:bg-[#5da061] transition-all transform active:scale-95">
-                                <FiShoppingBag /> Add To Cart
-                            </button>
-                            <button
-                                onClick={() => {
-                                    const itemId = product.id || product._id;
-                                    if (isInWishlist(itemId)) {
-                                        removeFromWishlist(itemId);
-                                        toast.info("Removed from wishlist");
-                                    } else {
-                                        addToWishlist({
-                                            id: itemId,
-                                            name: product.name,
-                                            price: Number(product.price),
-                                            image: product.image,
-                                            brand: product.brand || "SneakFit",
-                                            condition: product.condition,
-                                            description: product.description || "",
-                                            size: product.size
-                                        });
-                                        toast.success("Added to wishlist!");
-                                    }
-                                }}
-                                className={`p-5 rounded-2xl flex items-center justify-center transition-all transform active:scale-95 ${isInWishlist(product.id || product._id)
-                                    ? "bg-red-500 text-white shadow-xl shadow-red-500/30"
-                                    : theme === "dark" ? "bg-neutral-900 text-neutral-400 hover:text-red-500 border border-neutral-800" : "bg-white text-neutral-400 hover:text-red-500 border border-neutral-100 shadow-sm"
-                                    }`}
-                                title={isInWishlist(product.id || product._id) ? "Remove from wishlist" : "Add to wishlist"}
-                            >
-                                <FiHeart size={24} className={isInWishlist(product.id || product._id) ? "fill-white" : ""} />
-                            </button>
-                            {canManage && (
+                            {canManage ? (
                                 <div className="flex gap-4">
-                                    <Link href={`/dashboard/product/${product._id || product.id}/edit`} className={`p-5 rounded-2xl ${theme === 'dark' ? 'bg-white text-black' : 'bg-black text-white'}`}><FiEdit size={24} /></Link>
-                                    <button onClick={onDelete} className="bg-red-500 text-white p-5 rounded-2xl"><FiTrash2 size={24} /></button>
+                                    <Link
+                                        href={`/dashboard/product/${product._id || product.id}/edit`}
+                                        className={`px-10 py-5 rounded-2xl flex items-center gap-3 font-bold transition-all transform active:scale-95 ${theme === 'dark' ? 'bg-white text-black hover:bg-neutral-200' : 'bg-black text-white hover:bg-neutral-800'}`}
+                                    >
+                                        <FiEdit size={24} /> Edit Listing
+                                    </Link>
+                                    <button
+                                        onClick={onDelete}
+                                        className="bg-red-500 text-white px-10 py-5 rounded-2xl flex items-center gap-3 font-bold hover:bg-red-600 transition-all transform active:scale-95 shadow-xl shadow-red-500/20"
+                                    >
+                                        <FiTrash2 size={24} /> Delete Listing
+                                    </button>
                                 </div>
+                            ) : (
+                                <>
+                                    {(user?.role !== "seller" && user?.role !== "admin") ? (
+                                        <>
+                                            <button onClick={handleAddToCart} className="bg-[#6db56f] text-white px-12 py-5 rounded-2xl flex items-center gap-4 text-xl font-bold shadow-xl hover:bg-[#5da061] transition-all transform active:scale-95">
+                                                <FiShoppingBag /> Add To Cart
+                                            </button>
+                                            <button
+                                                onClick={() => {
+                                                    const itemId = product.id || product._id;
+                                                    if (isInWishlist(itemId)) {
+                                                        removeFromWishlist(itemId);
+                                                        toast.info("Removed from wishlist");
+                                                    } else {
+                                                        addToWishlist({
+                                                            id: itemId,
+                                                            name: product.name,
+                                                            price: Number(product.price),
+                                                            image: product.image,
+                                                            brand: product.brand || "SneakFit",
+                                                            condition: product.condition,
+                                                            description: product.description || "",
+                                                            size: product.size
+                                                        });
+                                                        toast.success("Added to wishlist!");
+                                                    }
+                                                }}
+                                                className={`p-5 rounded-2xl flex items-center justify-center transition-all transform active:scale-95 ${isInWishlist(product.id || product._id)
+                                                    ? "bg-red-500 text-white shadow-xl shadow-red-500/30"
+                                                    : theme === "dark" ? "bg-neutral-900 text-neutral-400 hover:text-red-500 border border-neutral-800" : "bg-white text-neutral-400 hover:text-red-500 border border-neutral-100 shadow-sm"
+                                                    }`}
+                                                title={isInWishlist(product.id || product._id) ? "Remove from wishlist" : "Add to wishlist"}
+                                            >
+                                                <FiHeart size={24} className={isInWishlist(product.id || product._id) ? "fill-white" : ""} />
+                                            </button>
+                                        </>
+                                    ) : (
+                                        <div className={`px-8 py-5 rounded-2xl flex items-center gap-4 text-lg font-bold border ${theme === 'dark' ? 'bg-neutral-900 border-neutral-800 text-neutral-500' : 'bg-white border-neutral-100 text-neutral-400'}`}>
+                                            <FiUser /> Business Account - Shopping Disabled
+                                        </div>
+                                    )}
+                                </>
                             )}
                         </div>
                     </div>

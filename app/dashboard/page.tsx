@@ -6,7 +6,9 @@ import ProductCard from "./_components/ProductCard";
 import Pagination from "./_components/Pagination";
 import SupportSection from "./_components/SupportSection";
 import FeaturedOffers from "./_components/FeaturedOffers";
+import SellerDashboard from "./_components/SellerDashboard";
 import SettingsDropdown from "./_components/SettingsDropdown";
+import NotificationPanel from "./_components/NotificationPanel";
 import { handleGetAllProducts } from "@/lib/actions/product.actions";
 import { useAuth } from "@/context/AuthContext";
 import { useTheme } from "@/context/ThemeContext";
@@ -27,11 +29,24 @@ export default function DashboardPage() {
   const limit = 6;
 
   const { user } = useAuth();
-  const currentUserId = user?.id || user?._id;
+  const userRole = user?.role?.toLowerCase() || "";
+
+
+  const getRawId = (u: any): string | undefined => {
+    if (!u) return undefined;
+    const raw = u.id || u._id;
+    if (!raw) return undefined;
+    if (typeof raw === 'string') return raw;
+    if (raw.$oid) return raw.$oid;
+    return raw.toString();
+  };
+  const currentUserId = getRawId(user);
 
   const fetchProducts = async () => {
+    if (!user) return;
     setLoading(true);
-    const result = await handleGetAllProducts(page, limit, search);
+    const sellerFilter = userRole === "seller" ? currentUserId : undefined;
+    const result = await handleGetAllProducts(page, limit, search, sellerFilter);
     if (result.success) {
       if (result.data.products) {
         setLiveProducts(result.data.products);
@@ -49,7 +64,7 @@ export default function DashboardPage() {
   useEffect(() => {
     fetchProducts();
     window.scrollTo({ top: 0, behavior: 'smooth' });
-  }, [page, search]);
+  }, [page, search, user]);
 
   const handleProductDeleted = (id: string) => {
     fetchProducts();
@@ -64,36 +79,50 @@ export default function DashboardPage() {
         <header className="flex flex-col md:flex-row justify-between items-start md:items-center mb-12 px-4 gap-6">
           <div className="flex flex-col gap-2">
             <h2 className={`text-4xl font-black tracking-tighter uppercase transition-colors ${theme === 'dark' ? 'text-white' : 'text-neutral-900'}`}>
-              New Drops<span className="text-neutral-300">.</span>
+              {userRole === 'seller' ? 'Inventory' : userRole === 'admin' ? 'All Products' : 'New Drops'}<span className="text-neutral-300">.</span>
             </h2>
             <div className="flex items-center gap-3">
               <span className="text-xs font-bold text-neutral-400 uppercase tracking-widest">
                 Showing {liveProducts.length} of {totalProducts} items
               </span>
               <div className="h-1 w-1 rounded-full bg-neutral-300"></div>
-              <span className={`text-xs font-bold uppercase tracking-widest px-3 py-1 rounded-full transition-colors ${theme === 'dark' ? 'bg-neutral-800 text-neutral-300' : 'bg-neutral-100 text-neutral-900'}`}>
-                Spring '24 Collection
-              </span>
+              {userRole === 'buyer' && (
+                <span className={`text-xs font-bold uppercase tracking-widest px-3 py-1 rounded-full transition-colors ${theme === 'dark' ? 'bg-neutral-800 text-neutral-300' : 'bg-neutral-100 text-neutral-900'}`}>
+                  Spring '24 Collection
+                </span>
+              )}
+              {userRole === 'admin' && (
+                <span className={`text-xs font-bold uppercase tracking-widest px-3 py-1 rounded-full transition-colors bg-purple-100 text-purple-700`}>
+                  Admin View
+                </span>
+              )}
             </div>
           </div>
 
-          <div className="flex items-center gap-4">
-            <button className={`flex items-center gap-2 px-6 py-3 rounded-2xl border transition-all ${theme === 'dark' ? 'bg-neutral-900 border-neutral-800 text-white hover:bg-neutral-800' : 'bg-neutral-50 border-neutral-100 text-neutral-600 hover:bg-neutral-100'}`}>
-              <FiFilter />
-              Filter
-            </button>
-            <button className={`flex items-center gap-2 px-6 py-3 rounded-2xl text-sm font-bold transition-all shadow-xl ${theme === 'dark' ? 'bg-white text-black hover:bg-neutral-200' : 'bg-neutral-900 text-white hover:bg-neutral-800 shadow-neutral-200'}`}>
-              Sort By
-              <FiChevronDown />
-            </button>
-            <div className="ml-2">
-              <SettingsDropdown />
-            </div>
+          <div className="flex items-center gap-3">
+            {userRole !== 'seller' && (
+              <>
+                <button className={`flex items-center gap-2 px-6 py-3 rounded-2xl border transition-all ${theme === 'dark' ? 'bg-neutral-900 border-neutral-800 text-white hover:bg-neutral-800' : 'bg-neutral-50 border-neutral-100 text-neutral-600 hover:bg-neutral-100'}`}>
+                  <FiFilter />
+                  Filter
+                </button>
+                <button className={`flex items-center gap-2 px-6 py-3 rounded-2xl text-sm font-bold transition-all shadow-xl ${theme === 'dark' ? 'bg-white text-black hover:bg-neutral-200' : 'bg-neutral-900 text-white hover:bg-neutral-800 shadow-neutral-200'}`}>
+                  Sort By
+                  <FiChevronDown />
+                </button>
+              </>
+            )}
+            <NotificationPanel />
+            <SettingsDropdown />
           </div>
         </header>
 
-        {/* Featured Section */}
-        <FeaturedOffers />
+        {/* Featured Section - Only for Buyers */}
+        {userRole === 'buyer' && <FeaturedOffers />}
+
+        <div className="px-4">
+          {(userRole === "seller" || userRole === "admin") && <SellerDashboard />}
+        </div>
 
         {loading ? (
           <div className="flex flex-col items-center justify-center min-h-[400px] gap-6">
@@ -107,10 +136,14 @@ export default function DashboardPage() {
         ) : (
           <div className="px-4">
             <div className="flex items-center justify-between mb-10">
-              <h3 className={`text-xl font-bold tracking-tight transition-colors ${theme === 'dark' ? 'text-white' : 'text-neutral-900'}`}>Marketplace</h3>
-              <button className="text-xs font-black uppercase tracking-widest text-neutral-400 hover:text-neutral-900 dark:hover:text-white transition-colors">
-                View Trends
-              </button>
+              <h3 className={`text-xl font-bold tracking-tight transition-colors ${theme === 'dark' ? 'text-white' : 'text-neutral-900'}`}>
+                {userRole === 'seller' ? 'My Products' : userRole === 'admin' ? 'All Products' : 'Marketplace'}
+              </h3>
+              {userRole === 'buyer' && (
+                <button className="text-xs font-black uppercase tracking-widest text-neutral-400 hover:text-neutral-900 dark:hover:text-white transition-colors">
+                  View Trends
+                </button>
+              )}
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-12 gap-y-16">
@@ -130,9 +163,11 @@ export default function DashboardPage() {
               onPageChange={(p) => setPage(p)}
             />
 
-            <div className={`mt-20 border-t pt-20 transition-colors ${theme === 'dark' ? 'border-neutral-800' : 'border-neutral-50'}`}>
-              <SupportSection />
-            </div>
+            {userRole === 'buyer' && (
+              <div className={`mt-20 border-t pt-20 transition-colors ${theme === 'dark' ? 'border-neutral-800' : 'border-neutral-50'}`}>
+                <SupportSection />
+              </div>
+            )}
           </div>
         )}
       </main>

@@ -3,6 +3,7 @@
 import React, { useState } from "react";
 import Sidebar from "../_components/Sidebar";
 import { useCart } from "@/context/CartContext";
+import { useAuth } from "@/context/AuthContext";
 import { motion, AnimatePresence } from "framer-motion";
 import { FiTrash2, FiPlus, FiMinus, FiShoppingBag, FiCheckCircle, FiLoader, FiArrowRight, FiX, FiCreditCard, FiTruck } from "react-icons/fi";
 import { toast } from "react-toastify";
@@ -37,6 +38,7 @@ const PAYMENT_METHODS = [
 
 export default function CartPage() {
     const { cartItems, removeFromCart, updateQuantity, totalPrice, updateSize, clearCart } = useCart();
+    const { user } = useAuth();
     const { theme } = useTheme();
     const router = useRouter();
 
@@ -158,10 +160,20 @@ export default function CartPage() {
                                 <span className={`text-5xl font-bold leading-none ${theme === 'dark' ? 'text-white' : 'text-gray-900'}`}>Rs {totalPrice.toLocaleString()}</span>
                             </div>
                             <button
-                                onClick={() => router.push("/dashboard/checkout")}
-                                className="bg-[#23d19d] text-white px-24 py-8 rounded-[30px] text-3xl font-bold shadow-2xl shadow-[#23d19d]/40 hover:bg-[#1eb88a] transition-all transform active:scale-95 disabled:opacity-50 min-w-[320px] flex items-center justify-center"
+                                onClick={() => {
+                                    if (user?.role === "seller") {
+                                        toast.error("Seller accounts are not allowed to place orders.");
+                                        return;
+                                    }
+                                    router.push("/dashboard/checkout");
+                                }}
+                                className={`px-24 py-8 rounded-[30px] text-3xl font-bold shadow-2xl transition-all transform active:scale-95 min-w-[320px] flex items-center justify-center ${user?.role === "seller"
+                                    ? "bg-neutral-800 text-neutral-500 cursor-not-allowed shadow-none"
+                                    : "bg-[#23d19d] text-white shadow-[#23d19d]/40 hover:bg-[#1eb88a]"
+                                    }`}
+                                disabled={user?.role === "seller"}
                             >
-                                Checkout
+                                {user?.role === "seller" ? "Disabled" : "Checkout"}
                             </button>
                         </div>
                     </div>
