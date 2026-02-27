@@ -20,10 +20,16 @@ export async function handleCreateOrder(orderData: any) {
   }
 }
 
-export async function handleGetMyOrders() {
+export async function handleGetMyOrders(page?: number, limit?: number) {
   try {
     const token = await getAuthToken();
-    const response = await fetch(`${API_URL}/my-orders`, {
+    let url = `${API_URL}/my-orders`;
+    const params = new URLSearchParams();
+    if (page) params.append("page", page.toString());
+    if (limit) params.append("limit", limit.toString());
+    if (params.toString()) url += `?${params.toString()}`;
+
+    const response = await fetch(url, {
       headers: {
         Authorization: `Bearer ${token}`,
       },
@@ -36,10 +42,17 @@ export async function handleGetMyOrders() {
   }
 }
 
-export async function handleGetAllOrders() {
+export async function handleGetAllOrders(page?: number, limit?: number, status?: string) {
   try {
     const token = await getAuthToken();
-    const response = await fetch(`${API_URL}/all`, {
+    let url = `${API_URL}/all`;
+    const params = new URLSearchParams();
+    if (page) params.append("page", page.toString());
+    if (limit) params.append("limit", limit.toString());
+    if (status) params.append("status", status);
+    if (params.toString()) url += `?${params.toString()}`;
+
+    const response = await fetch(url, {
       headers: {
         Authorization: `Bearer ${token}`,
       },
@@ -78,6 +91,21 @@ export async function handleDeleteOrder(orderId: string) {
       headers: {
         Authorization: `Bearer ${token}`,
       },
+    });
+
+    return await response.json();
+  } catch (error: any) {
+    return { success: false, message: error.message };
+  }
+}
+export async function handleGetChartData() {
+  try {
+    const token = await getAuthToken();
+    const response = await fetch(`${API_URL}/chart`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+      cache: "no-store",
     });
 
     return await response.json();

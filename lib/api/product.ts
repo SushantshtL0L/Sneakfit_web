@@ -16,12 +16,13 @@ export const createProduct = async (formData: FormData) => {
   }
 };
 
-export const getAllProducts = async (page?: number, limit?: number, search?: string) => {
+export const getAllProducts = async (page?: number, limit?: number, search?: string, seller?: string) => {
   try {
     const params: any = {};
     if (page !== undefined) params.page = page;
     if (limit !== undefined) params.limit = limit;
     if (search !== undefined) params.search = search;
+    if (seller !== undefined) params.seller = seller;
     const response = await axios.get(API.PRODUCT.LIST, { params });
     return response.data;
   } catch (err: any) {

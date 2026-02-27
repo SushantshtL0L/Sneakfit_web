@@ -17,9 +17,9 @@ export async function handleCreateProduct(formData: FormData) {
   }
 }
 
-export async function handleGetAllProducts(page?: number, limit?: number, search?: string) {
+export async function handleGetAllProducts(page?: number, limit?: number, search?: string, seller?: string) {
   try {
-    const products = await getAllProducts(page, limit, search);
+    const products = await getAllProducts(page, limit, search, seller);
     return {
       success: true,
       data: products,

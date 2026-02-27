@@ -1,4 +1,4 @@
-export const API ={
+export const API = {
     AUTH:{
         LOGIN: "/api/auth/login",
         REGISTER: "/api/auth/register",
@@ -15,6 +15,21 @@ export const API ={
       GET_ONE: (id: string) => `/api/products/${id}`,
       DELETE: (id: string) => `/api/products/${id}`,
     },
+
+    ORDER: {
+        LIST: "/api/orders/all",
+        USER_ORDERS: "/api/orders/user",
+        CREATE: "/api/orders",
+        UPDATE_STATUS: (id: string) => `/api/orders/${id}/status`,
+        DELETE: (id: string) => `/api/orders/${id}`,
+    },
+
+    NOTIFICATION: {
+        LIST: "/api/notifications",
+        CREATE: "/api/notifications",
+        DELETE: (id: string) => `/api/notifications/${id}`,
+    },
+
     ADMIN:{
         USER:{
             LIST: "/api/admin/users",
@@ -23,5 +38,13 @@ export const API ={
             UPDATE: (id: string) => `/api/admin/users/${id}`,
             DELETE: (id: string) => `/api/admin/users/${id}`,
         }
+    },
+
+    BLOG: {
+      LIST: "/api/blogs",
+      GET_ONE: (id: string) => `/api/blogs/${id}`,
+      CREATE: "/api/blogs",
+      UPDATE: (id: string) => `/api/blogs/${id}`,
+      DELETE: (id: string) => `/api/blogs/${id}`,
     }   
 };
