@@ -194,52 +194,84 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* TECHNOLOGY SECTION */}
-      <section className="py-16 md:py-24 px-4 lg:px-8 bg-black">
-        <div className="max-w-6xl mx-auto grid lg:grid-cols-2 gap-12 items-center">
+      {/* ABOUT SECTION */}
+      <section id="about" className="py-24 px-4 lg:px-8 bg-gradient-to-b from-black to-[#0a0a0a]">
+        <div className="max-w-4xl mx-auto text-center">
           <motion.div
-            initial={{ opacity: 0, x: -50 }}
-            whileInView={{ opacity: 1, x: 0 }}
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8 }}
-            className="relative"
           >
-            <div className="relative h-64 md:h-80 lg:h-96">
-              <Image
-                src="/images/shoe.png"
-                alt="Goldstar Technology"
-                fill
-                className="object-contain"
-                sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 40vw"
-              />
+            <h2 className="text-4xl md:text-5xl font-black italic tracking-tighter uppercase mb-8">
+              About <span className="text-red-600">SneakFit</span>
+            </h2>
+            <div className="space-y-8 text-neutral-400 text-lg leading-relaxed">
+              <p>
+                SneakFit is more than just an e-commerce platform; it's a destination for true sneaker enthusiasts. Born from the culture of the streets, we bridge the gap between high-end luxury and everyday style.
+              </p>
+              <p>
+                Whether you're looking for the latest limited-edition drops from global brands or searching for that perfect pair of authenticated thrifted kicks, SneakFit has you covered. Our platform is built on trust, authenticity, and a passion for footwear.
+              </p>
+              <div className="flex flex-col md:flex-row justify-center gap-12 pt-8">
+                <div>
+                  <h4 className="text-white font-bold uppercase tracking-widest text-xs mb-2">Authenticity</h4>
+                  <p className="text-sm">Every pair is inspected for quality and genuineness.</p>
+                </div>
+                <div>
+                  <h4 className="text-white font-bold uppercase tracking-widest text-xs mb-2">Sustainability</h4>
+                  <p className="text-sm">Promoting thrift culture to reduce fashion waste.</p>
+                </div>
+              </div>
             </div>
           </motion.div>
+        </div>
+      </section>
 
-          <motion.div
-            initial={{ opacity: 0, x: 50 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.8, delay: 0.2 }}
+      {/* SERVICES SECTION */}
+      <section id="services" className="py-24 px-4 lg:px-8 bg-[#0a0a0a]">
+        <div className="max-w-6xl mx-auto text-center mb-16">
+          <motion.h2
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            className="text-4xl md:text-5xl font-black italic tracking-tighter uppercase"
           >
-            <h2 className="text-3xl md:text-4xl font-bold mb-6">
-              Engineered for Excellence
-            </h2>
-            <p className="text-gray-300 mb-6">
-              Every Goldstar shoe combines innovative design with premium materials.
-              Our SneakFit technology ensures optimal comfort and performance for every step.
-            </p>
-            <ul className="space-y-3">
-              {[
-                "Advanced Cushioning System",
-                "Breathable Mesh Design",
-                "Durable Rubber Outsole",
-                "Ergonomic Support"
-              ].map((item, index) => (
-                <li key={index} className="flex items-center">
-                  <div className="w-2 h-2 bg-red-500 rounded-full mr-3"></div>
-                  <span>{item}</span>
-                </li>
-              ))}
-            </ul>
-          </motion.div>
+            What We <span className="text-red-600">Deliver</span>
+          </motion.h2>
+          <p className="text-neutral-500 mt-4 max-w-xl mx-auto">Providing a seamless shopping experience for the modern sneakerhead.</p>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-6xl mx-auto">
+          {[
+            {
+              title: "Branded New Shoes",
+              desc: "Get your hands on the latest releases from top global brands, fully authenticated and guaranteed new.",
+              icon: <FaCrown className="text-2xl" />
+            },
+            {
+              title: "Premium Thrift Store",
+              desc: "A curated marketplace for high-quality, pre-owned sneakers. Sustainability meets street style.",
+              icon: <FaLeaf className="text-2xl" />
+            },
+            {
+              title: "SneakFit Seller Hub",
+              desc: "A dedicated platform for sellers to list their inventory and reach thousands of sneaker enthusiasts.",
+              icon: <FaFire className="text-2xl" />
+            }
+          ].map((service, i) => (
+            <motion.div
+              key={i}
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ delay: i * 0.1 }}
+              className="p-10 rounded-[2.5rem] bg-neutral-900/50 border border-white/5 hover:bg-neutral-800/50 transition-all group"
+            >
+              <div className="w-16 h-16 bg-red-600 rounded-2xl flex items-center justify-center mb-8 group-hover:rotate-12 transition-transform">
+                {service.icon}
+              </div>
+              <h3 className="text-2xl font-bold mb-4">{service.title}</h3>
+              <p className="text-neutral-400 leading-relaxed text-sm">{service.desc}</p>
+            </motion.div>
+          ))}
         </div>
       </section>
 

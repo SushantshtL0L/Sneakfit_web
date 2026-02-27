@@ -28,11 +28,6 @@ body {
   min-height: 100vh;
 }
 
-/* Explicit overrides for stubborn components */
-aside {
-  background-color: var(--sidebar-bg);
-  border-color: var(--border-color);
-}
 
 @layer utilities {
   .no-scrollbar::-webkit-scrollbar {

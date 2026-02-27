@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useState, useEffect } from "react";
+import Image from "next/image";
 import LoginForm from "@/app/(auth)/_components/LoginForm";
 import RegisterForm from "@/app/(auth)/_components/RegisterForm";
 
@@ -32,23 +33,31 @@ export default function Header() {
       >
         <div className="max-w-7xl mx-auto px-6 lg:px-8 flex justify-between items-center">
           {/* Logo */}
-          <div className="flex items-center space-x-3">
-            <div className="w-8 h-8 bg-gradient-to-r from-red-600 to-orange-500 rounded-full flex items-center justify-center">
-              <span className="font-bold text-white">GS</span>
+          <Link href="/" className="flex items-center space-x-3">
+            <div className="relative w-8 h-8 overflow-hidden rounded-full">
+              <Image
+                src="/images/logo.png"
+                alt="SneakFit Logo"
+                fill
+                className="object-cover"
+              />
             </div>
             <span className="text-lg font-bold text-white">SneakFit.</span>
-          </div>
+          </Link>
 
           {/* Navigation */}
           <nav className="flex space-x-6 text-sm font-bold text-white">
             <Link href="/" className={navItemClass}>
               Home
             </Link>
-            <Link href="/about" className={navItemClass}>
+            <Link href="/#about" className={navItemClass}>
               About us
             </Link>
-            <Link href="/service" className={navItemClass}>
+            <Link href="/#services" className={navItemClass}>
               Services
+            </Link>
+            <Link href="/blogs" className={navItemClass}>
+              Blogs
             </Link>
             <span
               onClick={() => setOpen(true)}
