@@ -3,13 +3,14 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { motion } from "framer-motion";
-import { FiGrid, FiUsers, FiShoppingBag, FiLogOut, FiArrowRight, FiPackage } from "react-icons/fi";
+import { FiGrid, FiUsers, FiShoppingBag, FiLogOut, FiArrowRight, FiPackage, FiType } from "react-icons/fi";
 
 const ADMIN_LINKS = [
     { href: "/admin", label: "Dashboard", icon: FiGrid },
     { href: "/admin/users", label: "Users", icon: FiUsers },
     { href: "/admin/products", label: "Products", icon: FiShoppingBag },
     { href: "/admin/orders", label: "Orders", icon: FiPackage },
+    { href: "/admin/blogs", label: "Blogs", icon: FiType },
 ];
 
 const SidebarItem = ({
@@ -63,7 +64,7 @@ export default function Sidebar() {
     const isActive = (href: string) => href === "/admin" ? pathname === href : pathname?.startsWith(href);
 
     return (
-        <aside className="w-[320px] bg-neutral-950 flex flex-col h-screen sticky top-0 hidden xl:flex border-r border-white/5">
+        <aside className="w-[320px] bg-black flex flex-col h-screen sticky top-0 hidden xl:flex border-r border-white/5">
             <div className="p-10 flex flex-col h-full">
                 <div className="mb-12 px-4">
                     <Link href="/admin">

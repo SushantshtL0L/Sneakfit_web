@@ -5,6 +5,7 @@ import { handleAdminGetAllUsers } from "@/lib/actions/auth.actions";
 import { handleGetAllProducts } from "@/lib/actions/product.actions";
 import { handleGetAllOrders } from "@/lib/actions/order.actions";
 import Link from "next/link";
+import AdminCharts from "./_component/AdminCharts";
 
 export default async function Page() {
     const userResult = await handleWhoami();
@@ -49,6 +50,9 @@ export default async function Page() {
                 <StatCard label="Total Orders" value={orderCount} href="/admin/orders" />
                 <StatCard label="Pending / Processing" value={pendingOrders} href="/admin/orders" highlight={pendingOrders > 0} />
             </div>
+
+            {/* Visual Analytics Section */}
+            <AdminCharts />
         </div>
     );
 }
