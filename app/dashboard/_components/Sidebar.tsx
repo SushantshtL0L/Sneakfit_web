@@ -78,6 +78,7 @@ export default function Sidebar({ activePage }: { activePage: "shoes" | "thrifts
 
     const userRole = user?.role?.toLowerCase() || "";
     const isSeller = userRole === "seller" || userRole === "admin";
+    const isSellerRoleOnly = userRole === "seller";
 
     React.useEffect(() => setMounted(true), []);
 
@@ -116,7 +117,7 @@ export default function Sidebar({ activePage }: { activePage: "shoes" | "thrifts
                         </div>
                     </Link>
 
-                    {/* Quick Access Toggle in Sidebar */}
+                    {/* Theme Toggle */}
                     <button
                         onClick={toggleTheme}
                         className={`w-10 h-10 rounded-xl flex items-center justify-center hover:scale-110 active:scale-95 transition-all shadow-lg ${theme === 'dark' ? 'bg-white text-black' : 'bg-neutral-900 text-white'}`}
@@ -138,25 +139,37 @@ export default function Sidebar({ activePage }: { activePage: "shoes" | "thrifts
                     />
                 </div>
 
+                {!isSeller && (
+                    <>
+                        <div className="text-[10px] uppercase tracking-[0.2em] text-neutral-400 font-bold mb-6 px-4">
+                            Marketplace
+                        </div>
+                        <nav className="flex flex-col gap-2 mb-8">
+                            <SidebarItem label="Shoes" active={activePage === "shoes"} href="/dashboard" icon={FiShoppingBag} theme={theme} />
+                            <SidebarItem label="Thrifts" active={activePage === "thrifts"} badge="New" href="/dashboard/thrifts" icon={FiTag} theme={theme} />
+                            <SidebarItem label="Most Sales" active={activePage === "sales"} href="#" icon={FiTrendingUp} theme={theme} />
+                        </nav>
+                    </>
+                )}
+
                 <div className="text-[10px] uppercase tracking-[0.2em] text-neutral-400 font-bold mb-6 px-4">
-                    Marketplace
+                    {isSeller ? 'Business' : 'Account'}
                 </div>
                 <nav className="flex flex-col gap-2 flex-1">
-                    <SidebarItem label="Shoes" active={activePage === "shoes"} href="/dashboard" icon={FiShoppingBag} theme={theme} />
-                    <SidebarItem label="Thrifts" active={activePage === "thrifts"} badge="New" href="/dashboard/thrifts" icon={FiTag} theme={theme} />
-                    <SidebarItem label="Most Sales" active={activePage === "sales"} href="#" icon={FiTrendingUp} theme={theme} />
-
-                    <div className="mt-8 text-[10px] uppercase tracking-[0.2em] text-neutral-400 font-bold mb-6 px-4">
-                        Account
-                    </div>
-                    <SidebarItem label="My Cart" active={activePage === "cart"} href="/dashboard/cart" icon={FiShoppingCart} theme={theme} />
-                    <SidebarItem label="My Wishlist" active={activePage === "wishlist"} href="/dashboard/wishlist" icon={FiHeart} badge={wishlistItems.length > 0 ? String(wishlistItems.length) : undefined} theme={theme} />
-                    <SidebarItem label="My Orders" active={activePage === "orders"} href="/dashboard/orders" icon={FiBox} theme={theme} />
-                    {isSeller && (
-                        <SidebarItem label="Sell Item" active={activePage === "sell"} href="/dashboard/sell" icon={FiPlusSquare} theme={theme} />
+                    {!isSeller && (
+                        <>
+                            <SidebarItem label="My Cart" active={activePage === "cart"} href="/dashboard/cart" icon={FiShoppingCart} theme={theme} />
+                            <SidebarItem label="My Wishlist" active={activePage === "wishlist"} href="/dashboard/wishlist" icon={FiHeart} badge={wishlistItems.length > 0 ? String(wishlistItems.length) : undefined} theme={theme} />
+                            <SidebarItem label="My Orders" active={activePage === "orders"} href="/dashboard/orders" icon={FiBox} theme={theme} />
+                        </>
                     )}
+
                     {isSeller && (
-                        <SidebarItem label="Manage Orders" active={activePage === "manage-orders"} href="/dashboard/orders/manage" icon={FiClipboard} theme={theme} />
+                        <>
+                            <SidebarItem label="My Products" active={activePage === "shoes"} href="/dashboard" icon={FiShoppingBag} theme={theme} />
+                            <SidebarItem label="Sell Item" active={activePage === "sell"} href="/dashboard/sell" icon={FiPlusSquare} theme={theme} />
+                            <SidebarItem label="My Sales" active={activePage === "manage-orders"} href="/dashboard/orders/manage" icon={FiClipboard} theme={theme} />
+                        </>
                     )}
                     <SidebarItem label="Profile" active={activePage === "profile"} href="/profile" icon={FiUser} theme={theme} />
                 </nav>

@@ -11,18 +11,24 @@ export default function OrdersPage() {
     const [orders, setOrders] = useState<any[]>([]);
     const [loading, setLoading] = useState(true);
     const [expandedOrder, setExpandedOrder] = useState<string | null>(null);
+    const [page, setPage] = useState(1);
+    const [pagination, setPagination] = useState<any>(null);
+    const limit = 10;
     const { theme } = useTheme();
 
+    const fetchOrders = async () => {
+        setLoading(true);
+        const result = await handleGetMyOrders(page, limit);
+        if (result.success) {
+            setOrders(result.data);
+            setPagination(result.pagination);
+        }
+        setLoading(false);
+    };
+
     useEffect(() => {
-        const fetchOrders = async () => {
-            const result = await handleGetMyOrders();
-            if (result.success) {
-                setOrders(result.data);
-            }
-            setLoading(false);
-        };
         fetchOrders();
-    }, []);
+    }, [page]);
 
     const toggleOrder = (id: string) => {
         setExpandedOrder(expandedOrder === id ? null : id);
@@ -177,6 +183,33 @@ export default function OrdersPage() {
                                     </AnimatePresence>
                                 </div>
                             ))}
+
+                            {/* Pagination Controls */}
+                            {pagination && pagination.pages > 1 && (
+                                <div className={`pt-10 flex items-center justify-between border-t ${theme === 'dark' ? 'border-neutral-800' : 'border-neutral-100'}`}>
+                                    <p className="text-sm text-neutral-500 font-medium">
+                                        Showing page <span className={`${theme === 'dark' ? 'text-white' : 'text-neutral-900'} font-bold`}>{pagination.page}</span> of <span className={`${theme === 'dark' ? 'text-white' : 'text-neutral-900'} font-bold`}>{pagination.pages}</span>
+                                    </p>
+                                    <div className="flex gap-3">
+                                        <button
+                                            onClick={() => setPage(p => Math.max(1, p - 1))}
+                                            disabled={pagination.page === 1}
+                                            className={`px-6 py-3 rounded-2xl text-sm font-bold border transition-all flex items-center gap-2 disabled:opacity-30 disabled:cursor-not-allowed ${theme === 'dark' ? 'bg-neutral-800 text-white border-neutral-700 hover:bg-neutral-700' : 'bg-white text-neutral-900 border-neutral-200 hover:bg-neutral-50'
+                                                }`}
+                                        >
+                                            Previous
+                                        </button>
+                                        <button
+                                            onClick={() => setPage(p => Math.min(pagination.pages, p + 1))}
+                                            disabled={pagination.page === pagination.pages}
+                                            className={`px-6 py-3 rounded-2xl text-sm font-bold transition-all flex items-center gap-2 hover:scale-105 disabled:opacity-30 disabled:cursor-not-allowed disabled:hover:scale-100 ${theme === 'dark' ? 'bg-white text-black' : 'bg-neutral-900 text-white'
+                                                }`}
+                                        >
+                                            Next
+                                        </button>
+                                    </div>
+                                </div>
+                            )}
                         </div>
                     )}
                 </div>

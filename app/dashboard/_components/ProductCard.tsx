@@ -23,11 +23,23 @@ const ProductCard = ({ product, currentUserId, onDeleted }: { product: any, curr
         ? product.image
         : `http://localhost:5050${product.image}`;
 
-    const isOwner = currentUserId && product.seller && (
-        (typeof product.seller === 'string' ? product.seller : product.seller._id?.toString() || product.seller.id?.toString()) === currentUserId
+    // Safely extract plain string IDs — prevents [object Object] comparisons with Mongoose ObjectIds
+    const getRawId = (val: any): string | undefined => {
+        if (!val) return undefined;
+        if (typeof val === 'string') return val;
+        if (val.$oid) return val.$oid;
+        return typeof val.toString === 'function' ? val.toString() : undefined;
+    };
+    const currentId = getRawId(user?.id || user?._id);
+    const sellerId = getRawId(
+        typeof product.seller === 'string'
+            ? product.seller
+            : (product.seller?._id || product.seller?.id || product.seller)
     );
 
-    const isAdmin = user?.role === "admin";
+    const isOwner = !!(currentId && sellerId && currentId === sellerId);
+
+    const isAdmin = user?.role?.toLowerCase() === "admin";
     const canManage = isOwner || isAdmin;
 
     const navigateToDetail = () => {
@@ -98,16 +110,18 @@ const ProductCard = ({ product, currentUserId, onDeleted }: { product: any, curr
 
                     {/* Actions */}
                     <div className="absolute top-6 right-6 flex flex-col gap-3 z-10">
-                        <button
-                            onClick={handleWishlistToggle}
-                            className={`w-10 h-10 backdrop-blur-md rounded-xl flex items-center justify-center transition-all shadow-sm ${wishlisted
-                                ? "bg-red-500 text-white shadow-red-500/30"
-                                : theme === "dark" ? "bg-neutral-800/80 text-neutral-400 hover:text-red-500" : "bg-white/80 text-neutral-400 hover:text-red-500"
-                                }`}
-                            title={wishlisted ? "Remove from wishlist" : "Add to wishlist"}
-                        >
-                            <FiHeart className={`text-xl ${wishlisted ? "fill-white" : ""}`} />
-                        </button>
+                        {!canManage && (
+                            <button
+                                onClick={handleWishlistToggle}
+                                className={`w-10 h-10 backdrop-blur-md rounded-xl flex items-center justify-center transition-all shadow-sm ${wishlisted
+                                    ? "bg-red-500 text-white shadow-red-500/30"
+                                    : theme === "dark" ? "bg-neutral-800/80 text-neutral-400 hover:text-red-500" : "bg-white/80 text-neutral-400 hover:text-red-500"
+                                    }`}
+                                title={wishlisted ? "Remove from wishlist" : "Add to wishlist"}
+                            >
+                                <FiHeart className={`text-xl ${wishlisted ? "fill-white" : ""}`} />
+                            </button>
+                        )}
 
                         {canManage && (
                             <>
