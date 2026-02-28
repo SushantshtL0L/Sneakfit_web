@@ -147,7 +147,7 @@ export default function Sidebar({ activePage }: { activePage: "shoes" | "thrifts
                         <nav className="flex flex-col gap-2 mb-8">
                             <SidebarItem label="Shoes" active={activePage === "shoes"} href="/dashboard" icon={FiShoppingBag} theme={theme} />
                             <SidebarItem label="Thrifts" active={activePage === "thrifts"} badge="New" href="/dashboard/thrifts" icon={FiTag} theme={theme} />
-                            <SidebarItem label="Most Sales" active={activePage === "sales"} href="#" icon={FiTrendingUp} theme={theme} />
+                            <SidebarItem label="Most Sales" active={activePage === "sales"} href="/dashboard/sales" icon={FiTrendingUp} theme={theme} />
                         </nav>
                     </>
                 )}
