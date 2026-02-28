@@ -76,6 +76,8 @@ import {
   FaFire
 } from "react-icons/fa";
 import Header from "./_components/Header";
+import HomeBanner from "./_components/HomeBanner";
+import TopSales from "./_components/TopSales";
 
 export default function HomePage() {
   const { isAuthenticated, user, loading } = useAuth();
@@ -102,57 +104,11 @@ export default function HomePage() {
       {/* Use only Header component */}
 
 
-      {/* HERO SECTION */}
-      <main className="relative min-h-screen flex flex-col items-center justify-center overflow-hidden pt-24 !bg-black">
-        <motion.h1
-          initial={{ opacity: 0, scale: 0.8 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 0.8 }}
-          className="absolute text-[150px] md:text-[230px] lg:text-[250px] xl:text-[300px] font-extrabold text-[#c30101] opacity-100 top-20 md:top-10 uppercase tracking-tighter leading-none select-none z-0"
-        >
-          GOLDSTAR
-        </motion.h1>
-
-        <motion.div
-          initial={{ opacity: 0, scale: 0.9 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 0.8, delay: 0.2 }}
-          className="z-10 relative top-10 md:top-20 lg:top-24"
-        >
-          <div className="relative w-[300px] h-[200px] md:w-[600px] md:h-[400px] lg:w-[800px] lg:h-[500px] xl:w-[900px] xl:h-[550px]">
-            <Image
-              src="/images/shoe.png"
-              alt="Goldstar Shoe"
-              fill
-              className="object-contain drop-shadow-2xl"
-              priority
-              sizes="(max-width: 768px) 100vw, (max-width: 1200px) 80vw, 60vw"
-            />
-          </div>
-        </motion.div>
-
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, delay: 0.4 }}
-          className="absolute bottom-16 text-center z-10"
-        >
-          <h2 className="text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-extrabold text-white/90 mb-2">
-            THE NEW 2025
-          </h2>
-          <p className="text-sm md:text-base lg:text-lg text-gray-400 italic">
-            Aba ko Hidai Hami Sanga
-          </p>
-        </motion.div>
-
-        <motion.div
-          animate={{ y: [0, 10, 0] }}
-          transition={{ repeat: Infinity, duration: 1.5 }}
-          className="absolute bottom-6 left-1/2 transform -translate-x-1/2 z-10"
-        >
-          <FaArrowDown className="text-xl md:text-2xl text-white/60" />
-        </motion.div>
+      <main className="max-w-7xl mx-auto px-4 md:px-8 pt-24">
+        <HomeBanner />
       </main>
+
+      <TopSales />
 
       {/* FEATURES SECTION */}
       <section className="py-16 md:py-24 px-4 lg:px-8 bg-gradient-to-b from-black to-gray-900">
