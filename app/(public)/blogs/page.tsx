@@ -82,7 +82,7 @@ export default function BlogsPage() {
             </main>
 
             <footer className="mt-40 py-20 border-t border-white/5 text-center">
-                <p className="text-xs text-neutral-600 font-bold uppercase tracking-widest">© 2026 SneakFit Journal</p>
+                <p className="text-xs text-neutral-600 font-bold uppercase tracking-widest">© 2026 Goldstar Journal</p>
             </footer>
         </div>
     );
