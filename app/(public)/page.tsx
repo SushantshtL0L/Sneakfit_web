@@ -1,62 +1,3 @@
-// "use client";
-
-// import Image from "next/image";
-// import { useEffect } from "react";
-// import { useRouter } from "next/navigation";
-// import { useAuth } from "@/context/AuthContext";
-
-// export default function HomePage() {
-//   const { isAuthenticated, user, loading } = useAuth();
-//   const router = useRouter();
-
-//   // useEffect(() => {
-//   //   if (loading) return;
-
-//   //   if (isAuthenticated && user) {
-//   //     if (user.role === "admin") {
-//   //       router.replace("/admin");
-//   //     } else {
-//   //       router.replace("/dashboard");
-//   //     }
-//   //   }
-//   // }, [isAuthenticated, user, loading, router]);
-
-//   if (loading) return null;
-
-//   return (
-//     <main className="relative min-h-screen flex items-center justify-center overflow-hidden">
-
-//       {/* BIG BACK TEXT */}
-//       <h1 className="absolute text-[200px] font-extrabold text-red-600/90 opacity-90 top-40 uppercase tracking-tighter">
-//         GOLDSTAR
-//       </h1>
-
-//       {/* SHOE IMAGE */}
-//       <div className="z-5 relative top-20">
-//         <Image
-//           src="/images/shoe.png" // put your shoe image in public/
-//           alt="Goldstar Shoe"
-//           width={880}
-//           height={600}
-//           priority
-//         />
-//       </div>
-
-//       {/* BOTTOM TEXT */}
-//       <div className="absolute bottom-5 text-center">
-
-//         <h2 className="text-6xl md:text-7xl lg:text-5xl font-extrabold text-white/80">
-//           THE NEW 2025
-//         </h2>
-//         <p className="mt-2 text-sm">
-//           Aba ko Hidai Hami Sanga
-//         </p>
-//       </div>
-//     </main>
-//   );
-// }
-
-
 "use client";
 
 import Image from "next/image";
@@ -76,13 +17,24 @@ import {
   FaFire
 } from "react-icons/fa";
 import Header from "./_components/Header";
-import HomeBanner from "./_components/HomeBanner";
-import TopSales from "./_components/TopSales";
+import { handleGetAllBlogs } from "@/lib/actions/blog.actions";
+import Link from "next/link";
 
 export default function HomePage() {
   const { isAuthenticated, user, loading } = useAuth();
   const router = useRouter();
   const [isScrolled, setIsScrolled] = useState(false);
+  const [blogs, setBlogs] = useState<any[]>([]);
+
+  useEffect(() => {
+    async function fetchBlogs() {
+      const result = await handleGetAllBlogs();
+      if (result.success) {
+        setBlogs(result.data.slice(0, 3)); // Only show latest 3
+      }
+    }
+    fetchBlogs();
+  }, []);
 
   useEffect(() => {
     const handleScroll = () => setIsScrolled(window.scrollY > 50);
@@ -101,14 +53,62 @@ export default function HomePage() {
 
   return (
     <div className="min-h-screen !bg-black text-white overflow-x-hidden">
-      {/* Use only Header component */}
+      <Header />
 
 
-      <main className="max-w-7xl mx-auto px-4 md:px-8 pt-24">
-        <HomeBanner />
+      {/* HERO SECTION */}
+      <main className="relative min-h-screen flex flex-col items-center justify-center overflow-hidden pt-24 !bg-black">
+        <motion.h1
+          initial={{ opacity: 0, scale: 0.8 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 0.8 }}
+          className="absolute text-[150px] md:text-[230px] lg:text-[250px] xl:text-[300px] font-extrabold text-[#c30101] opacity-100 top-20 md:top-10 uppercase tracking-tighter leading-none select-none z-0"
+        >
+          GOLDSTAR
+        </motion.h1>
+
+        <motion.div
+          initial={{ opacity: 0, scale: 0.9 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 0.8, delay: 0.2 }}
+          className="z-10 relative top-10 md:top-20 lg:top-24"
+        >
+          <div className="relative w-[300px] h-[200px] md:w-[600px] md:h-[400px] lg:w-[800px] lg:h-[500px] xl:w-[900px] xl:h-[550px]">
+            <Image
+              src="/images/shoe.png"
+              alt="Goldstar Shoe"
+              fill
+              className="object-contain drop-shadow-2xl"
+              priority
+              sizes="(max-width: 768px) 100vw, (max-width: 1200px) 80vw, 60vw"
+            />
+          </div>
+        </motion.div>
+
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8, delay: 0.4 }}
+          className="absolute bottom-16 text-center z-10"
+        >
+          <h2 className="text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-extrabold text-white/90 mb-2">
+            THE NEW 2025
+          </h2>
+          <p className="text-sm md:text-base lg:text-lg text-gray-400 italic">
+            Aba ko Hidai Hami Sanga
+          </p>
+        </motion.div>
+
+        <motion.div
+          animate={{ y: [0, 10, 0] }}
+          transition={{ repeat: Infinity, duration: 1.5 }}
+          className="absolute bottom-6 left-1/2 transform -translate-x-1/2 z-10"
+        >
+          <FaArrowDown className="text-xl md:text-2xl text-white/60" />
+        </motion.div>
       </main>
 
-      <TopSales />
+
 
       {/* FEATURES SECTION */}
       <section className="py-16 md:py-24 px-4 lg:px-8 bg-gradient-to-b from-black to-gray-900">
@@ -121,7 +121,7 @@ export default function HomePage() {
           >
             <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-4">
               <span className="bg-gradient-to-r from-red-600 to-orange-500 bg-clip-text text-transparent">
-                SNEAKFIT
+                GOLDSTAR
               </span>
               <span> Technology</span>
             </h2>
@@ -150,6 +150,8 @@ export default function HomePage() {
         </div>
       </section>
 
+
+
       {/* ABOUT SECTION */}
       <section id="about" className="py-24 px-4 lg:px-8 bg-gradient-to-b from-black to-[#0a0a0a]">
         <div className="max-w-4xl mx-auto text-center">
@@ -159,14 +161,14 @@ export default function HomePage() {
             transition={{ duration: 0.8 }}
           >
             <h2 className="text-4xl md:text-5xl font-black italic tracking-tighter uppercase mb-8">
-              About <span className="text-red-600">SneakFit</span>
+              About <span className="text-red-600">Goldstar</span>
             </h2>
             <div className="space-y-8 text-neutral-400 text-lg leading-relaxed">
               <p>
-                SneakFit is more than just an e-commerce platform; it's a destination for true sneaker enthusiasts. Born from the culture of the streets, we bridge the gap between high-end luxury and everyday style.
+                Goldstar is more than just an e-commerce platform; it's a destination for true sneaker enthusiasts. Born from the culture of the streets, we bridge the gap between high-end luxury and everyday style.
               </p>
               <p>
-                Whether you're looking for the latest limited-edition drops from global brands or searching for that perfect pair of authenticated thrifted kicks, SneakFit has you covered. Our platform is built on trust, authenticity, and a passion for footwear.
+                Whether you're looking for the latest limited-edition drops from global brands or searching for that perfect pair of authenticated thrifted kicks, Goldstar has you covered. Our platform is built on trust, authenticity, and a passion for footwear.
               </p>
               <div className="flex flex-col md:flex-row justify-center gap-12 pt-8">
                 <div>
@@ -209,7 +211,7 @@ export default function HomePage() {
               icon: <FaLeaf className="text-2xl" />
             },
             {
-              title: "SneakFit Seller Hub",
+              title: "Goldstar Seller Hub",
               desc: "A dedicated platform for sellers to list their inventory and reach thousands of sneaker enthusiasts.",
               icon: <FaFire className="text-2xl" />
             }
@@ -230,6 +232,52 @@ export default function HomePage() {
           ))}
         </div>
       </section>
+
+      {/* BLOGS SECTION */}
+      <section id="blogs" className="py-24 px-4 lg:px-8 bg-black">
+        <div className="max-w-6xl mx-auto">
+          <div className="flex justify-between items-end mb-12">
+            <div>
+              <h2 className="text-4xl md:text-5xl font-black italic tracking-tighter uppercase">
+                Latest <span className="text-red-600">Stories</span>
+              </h2>
+              <p className="text-neutral-500 mt-2">Updates and style guides from the Goldstar community.</p>
+            </div>
+            <Link href="/blogs" className="text-red-600 font-bold hover:underline">
+              View all posts
+            </Link>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            {blogs.map((blog, i) => (
+              <motion.article
+                key={blog._id}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ delay: i * 0.1 }}
+                className="group cursor-pointer"
+              >
+                <Link href={`/blogs/${blog._id}`}>
+                  <div className="space-y-4">
+                    <div className="text-xs font-bold text-neutral-500 uppercase tracking-widest flex items-center gap-2">
+                      <span>{new Date(blog.createdAt).toLocaleDateString()}</span>
+                      <span className="w-1 h-1 bg-red-600 rounded-full"></span>
+                      <span>{blog.category || "General"}</span>
+                    </div>
+                    <h3 className="text-xl font-bold group-hover:text-red-600 transition-colors line-clamp-2">
+                      {blog.title}
+                    </h3>
+                    <p className="text-neutral-400 text-sm line-clamp-3 leading-relaxed">
+                      {blog.content.substring(0, 120)}...
+                    </p>
+                  </div>
+                </Link>
+              </motion.article>
+            ))}
+          </div>
+        </div>
+      </section>
+
 
       {/* FOOTER */}
       <footer className="py-8 px-4 lg:px-8 border-t border-white/10">
