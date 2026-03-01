@@ -37,12 +37,12 @@ export default function Header() {
             <div className="relative w-8 h-8 overflow-hidden rounded-full">
               <Image
                 src="/images/logo.png"
-                alt="SneakFit Logo"
+                alt="Goldstar Logo"
                 fill
                 className="object-cover"
               />
             </div>
-            <span className="text-lg font-bold text-white">SneakFit.</span>
+            <span className="text-lg font-bold text-white uppercase tracking-tighter">Goldstar.</span>
           </Link>
 
           {/* Navigation */}
