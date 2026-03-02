@@ -26,6 +26,8 @@ export default function DashboardPage() {
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [totalProducts, setTotalProducts] = useState(0);
+  const [sortBy, setSortBy] = useState("newest");
+  const [filterCondition, setFilterCondition] = useState("");
   const limit = 6;
 
   const { user } = useAuth();
@@ -46,7 +48,7 @@ export default function DashboardPage() {
     if (!user) return;
     setLoading(true);
     const sellerFilter = userRole === "seller" ? currentUserId : undefined;
-    const result = await handleGetAllProducts(page, limit, search, sellerFilter);
+    const result = await handleGetAllProducts(page, limit, search, sellerFilter, sortBy, filterCondition);
     if (result.success) {
       if (result.data.products) {
         setLiveProducts(result.data.products);
@@ -64,7 +66,7 @@ export default function DashboardPage() {
   useEffect(() => {
     fetchProducts();
     window.scrollTo({ top: 0, behavior: 'smooth' });
-  }, [page, search, user]);
+  }, [page, search, user, sortBy, filterCondition]);
 
   const handleProductDeleted = (id: string) => {
     fetchProducts();
@@ -102,14 +104,32 @@ export default function DashboardPage() {
           <div className="flex items-center gap-3">
             {userRole !== 'seller' && (
               <>
-                <button className={`flex items-center gap-2 px-6 py-3 rounded-2xl border transition-all ${theme === 'dark' ? 'bg-neutral-900 border-neutral-800 text-white hover:bg-neutral-800' : 'bg-neutral-50 border-neutral-100 text-neutral-600 hover:bg-neutral-100'}`}>
-                  <FiFilter />
-                  Filter
-                </button>
-                <button className={`flex items-center gap-2 px-6 py-3 rounded-2xl text-sm font-bold transition-all shadow-xl ${theme === 'dark' ? 'bg-white text-black hover:bg-neutral-200' : 'bg-neutral-900 text-white hover:bg-neutral-800 shadow-neutral-200'}`}>
-                  Sort By
-                  <FiChevronDown />
-                </button>
+                <div className="relative group">
+                  <select
+                    value={filterCondition}
+                    onChange={(e) => setFilterCondition(e.target.value)}
+                    className={`appearance-none flex items-center gap-2 px-6 py-3 rounded-2xl border transition-all outline-none cursor-pointer ${theme === 'dark' ? 'bg-neutral-900 border-neutral-800 text-white hover:bg-neutral-800' : 'bg-neutral-50 border-neutral-100 text-neutral-600 hover:bg-neutral-100'}`}
+                  >
+                    <option value="">All Conditions</option>
+                    <option value="new">Brand New</option>
+                    <option value="used">Used / Thrift</option>
+                  </select>
+                  <FiFilter className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none opacity-50" />
+                </div>
+
+                <div className="relative">
+                  <select
+                    value={sortBy}
+                    onChange={(e) => setSortBy(e.target.value)}
+                    className={`appearance-none flex items-center gap-2 px-8 py-3 rounded-2xl text-sm font-bold transition-all shadow-xl outline-none cursor-pointer ${theme === 'dark' ? 'bg-white text-black hover:bg-neutral-200' : 'bg-neutral-900 text-white hover:bg-neutral-800 shadow-neutral-200'}`}
+                  >
+                    <option value="newest">Newest First</option>
+                    <option value="price_asc">Price: Low to High</option>
+                    <option value="price_desc">Price: High to Low</option>
+                    <option value="name_asc">A - Z</option>
+                  </select>
+                  <FiChevronDown className={`absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none ${theme === 'dark' ? 'text-black' : 'text-white'}`} />
+                </div>
               </>
             )}
             <NotificationPanel />
